@@ -1879,12 +1879,16 @@ func createUser(cluster *DBCluster, user *User) error {
 - 全局唯一 ID（雪花算法、UUID）
 - 数据迁移
 
-中间件方案：
-- **ShardingSphere-Proxy**：代理层分片，Apache 开源
-- **Vitess**：YouTube 开源，云原生方案，适合 K8s
-- **TiDB**：分布式 NewSQL，自动分片，兼容 MySQL 协议
-- **MyCat**：早期方案，Java 实现
-- **MySQL Router**：官方代理
+Go 语言分库分表方案：
+
+| 方案 | 类型 | 说明 | GitHub |
+|------|------|------|--------|
+| **gorm/sharding** | Go 客户端库 | GORM 官方分片插件，支持雪花 ID | gorm.io/sharding |
+| **kingshard** | Go 代理层 | 国产高性能 MySQL 代理，支持读写分离、分片 | github.com/flike/kingshard |
+| **Vitess** | Go 代理层 | YouTube 开源，K8s 原生，大规模分片 | vitess.io |
+| **TiDB** | NewSQL | 兼容 MySQL 协议，自动分片，免中间件 | pingcap.com |
+
+> **推荐**：小规模用 gorm/sharding 或应用层分片；大规模用 Vitess 或直接上 TiDB。
 
 应用层分片示例：
 
@@ -2150,12 +2154,33 @@ func queryWithMetrics(db *sql.DB, query string, args ...interface{}) (*sql.Rows,
 
 ## 附录：Go MySQL 生态
 
+### 驱动与增强
+
 | 库 | 用途 | GitHub |
 |----|------|--------|
-| go-sql-driver/mysql | MySQL 驱动 | github.com/go-sql-driver/mysql |
-| sqlx | database/sql 增强 | github.com/jmoiron/sqlx |
-| GORM | ORM 框架 | gorm.io/gorm |
-| ent | Facebook ORM | entgo.io/ent |
-| sqlc | SQL 编译器 | github.com/sqlc-dev/sqlc |
-| goose | 数据库迁移 | github.com/pressly/goose |
-| go-migrate | 数据库迁移 | github.com/golang-migrate/migrate |
+| go-sql-driver/mysql | MySQL 驱动（必装） | github.com/go-sql-driver/mysql |
+| sqlx | database/sql 增强，结构体映射 | github.com/jmoiron/sqlx |
+
+### ORM 框架
+
+| 库 | 用途 | GitHub |
+|----|------|--------|
+| GORM | 最流行的 ORM，功能全面 | gorm.io/gorm |
+| ent | Facebook 开源，代码生成型 ORM | entgo.io/ent |
+| sqlc | **SQL→Go 代码生成器**（写SQL自动生成类型安全Go函数） | github.com/sqlc-dev/sqlc |
+
+### 分库分表与代理
+
+| 库 | 用途 | GitHub |
+|----|------|--------|
+| gorm/sharding | GORM 分片插件 | gorm.io/sharding |
+| kingshard | Go 实现的 MySQL 代理，读写分离+分片 | github.com/flike/kingshard |
+| go-mysql | binlog 解析、复制协议实现 | github.com/go-mysql-org/go-mysql |
+
+### 数据库迁移
+
+| 库 | 用途 | GitHub |
+|----|------|--------|
+| goose | 轻量迁移工具，支持 SQL 和 Go | github.com/pressly/goose |
+| golang-migrate | 通用迁移工具，多数据库支持 | github.com/golang-migrate/migrate |
+| atlas | 声明式 Schema 管理 | atlasgo.io |
