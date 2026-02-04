@@ -3,8 +3,9 @@
 > **作者**: frank.hutiefang
 > **知乎**: @大大大大大芳
 > **微信**: hutiefang
-> **版本**: v1.0
-> **更新时间**: 2026-02-03
+> **版本**: v1.1
+> **更新时间**: 2026-02-04
+
 
 ---
 
@@ -17,25 +18,73 @@
 - **数据库管理系统(DBMS)**：管理数据库的软件系统，如 MySQL、PostgreSQL、Oracle
 - **持久化**：将内存中的数据保存到磁盘，断电不丢失
 
-#### 关系型数据库标准
+#### SQL ANSI/ISO 标准演进
 
-| 标准 | 主要特性 |
-|------|----------|
-| SQL-92 | 基础 SQL 语法 |
-| SQL-99 | JOIN 语法优化、USING 子句 |
-| SQL-2011 | CTE (WITH)、JSON 支持、正则表达式 |
-| SQL-2016 | MATCH_RECOGNIZE、JSON 对象函数 |
+SQL 于 1986 年被 ANSI 采纳为标准，1987 年被 ISO 采纳。至今已发布 9 个主要版本。
+
+##### 标准版本与主要特性
+
+| 版本 | 年份 | 主要特性 | MySQL 支持 |
+|------|------|----------|------------|
+| **SQL-86** | 1986 | 首个标准，基础 SELECT/INSERT/UPDATE/DELETE | ✅ |
+| **SQL-89** | 1989 | PRIMARY KEY、FOREIGN KEY、DEFAULT、CHECK 约束 | ✅ |
+| **SQL-92** | 1992 | **里程碑版本**：JOIN 语法、LEFT/RIGHT/FULL JOIN、DATE/TIME/TIMESTAMP、CASE 表达式、CAST 类型转换 | ✅ (无 FULL JOIN) |
+| **SQL:1999** | 1999 | CTE (WITH)、递归查询、BOOLEAN 类型、正则表达式、触发器、存储过程、用户自定义类型 | ✅ 8.0+ (CTE) |
+| **SQL:2003** | 2003 | **窗口函数** (ROW_NUMBER, RANK)、MERGE 语句、XML 支持、SEQUENCE、MULTISET | ⚠️ 8.0+ (窗口函数)，❌ MERGE |
+| **SQL:2006** | 2006 | SQL/XML 增强、XQuery 支持 | ⚠️ 部分 |
+| **SQL:2008** | 2008 | TRUNCATE TABLE、INSTEAD OF 触发器、ORDER BY 增强 | ✅ TRUNCATE |
+| **SQL:2011** | 2011 | **时态表** (System-Versioned / Application-Time)、窗口函数增强 | ❌ 时态表 |
+| **SQL:2016** | 2016 | **JSON 支持** (JSON_OBJECT, JSON_ARRAY)、行模式识别 (MATCH_RECOGNIZE)、多态表函数 | ✅ 8.0+ JSON，❌ MATCH_RECOGNIZE |
+| **SQL:2023** | 2023 | **图查询 (SQL/PGQ)**、JSON 原生类型、数字下划线 (1_000_000)、BTRIM 函数 | ❌ 图查询，❌ 数字下划线 |
+
+> 参考：[ISO/IEC 9075 - Wikipedia](https://en.wikipedia.org/wiki/ISO/IEC_9075)、[SQL:2023 - Wikipedia](https://en.wikipedia.org/wiki/SQL:2023)
+
+##### MySQL 不支持的重要 SQL 标准特性
+
+| 特性 | SQL 标准版本 | 说明 | 替代方案 |
+|------|-------------|------|----------|
+| **FULL OUTER JOIN** | SQL-92 | 全外连接 | LEFT JOIN UNION RIGHT JOIN |
+| **MERGE (UPSERT)** | SQL:2003 | 合并插入/更新 | INSERT ... ON DUPLICATE KEY UPDATE |
+| **时态表** | SQL:2011 | 系统版本化表、时间旅行查询 | 手动维护历史表 / MariaDB 支持 |
+| **MATCH_RECOGNIZE** | SQL:2016 | 行模式识别（正则匹配行序列） | 应用层处理 / Oracle 支持 |
+| **图查询 SQL/PGQ** | SQL:2023 | 图数据库查询语法 | Neo4j / 多表 JOIN |
+| **数字下划线** | SQL:2023 | `1_000_000` 表示百万 | 直接写 `1000000` |
+| **BOOLEAN 字面量** | SQL:1999 | TRUE/FALSE 作为值 | ✅ MySQL 支持但存储为 TINYINT(1) |
+
+##### 各标准版本示例
 
 ```sql
--- SQL-99 JOIN 语法
-SELECT * FROM emp CROSS JOIN dept;  -- 笛卡尔积
-SELECT * FROM emp INNER JOIN dept USING(dept_id);
+-- SQL-92: JOIN 语法
+SELECT * FROM emp e
+LEFT JOIN dept d ON e.dept_id = d.id;
 
--- SQL-2011 CTE 语法
-WITH active_users AS (
-    SELECT id, name FROM users WHERE status = 'active'
+-- SQL:1999: CTE (MySQL 8.0+)
+WITH RECURSIVE org_tree AS (
+    SELECT id, name, manager_id, 1 AS level FROM employees WHERE manager_id IS NULL
+    UNION ALL
+    SELECT e.id, e.name, e.manager_id, t.level + 1
+    FROM employees e JOIN org_tree t ON e.manager_id = t.id
 )
-SELECT * FROM active_users WHERE id > 100;
+SELECT * FROM org_tree;
+
+-- SQL:2003: 窗口函数 (MySQL 8.0+)
+SELECT name, salary,
+       ROW_NUMBER() OVER (ORDER BY salary DESC) AS rank,
+       SUM(salary) OVER () AS total
+FROM employees;
+
+-- SQL:2016: JSON 函数 (MySQL 8.0+)
+SELECT JSON_OBJECT('id', id, 'name', name) AS user_json FROM users;
+
+-- SQL:2003 MERGE (MySQL 不支持，用以下替代)
+-- 标准写法: MERGE INTO t USING s ON t.id = s.id WHEN MATCHED THEN UPDATE ... WHEN NOT MATCHED THEN INSERT ...
+-- MySQL 替代:
+INSERT INTO target (id, name) VALUES (1, 'test')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
+
+-- SQL:2011 时态表 (MySQL 不支持，MariaDB 支持)
+-- CREATE TABLE t (id INT, name VARCHAR(100)) WITH SYSTEM VERSIONING;
+-- SELECT * FROM t FOR SYSTEM_TIME AS OF '2024-01-01';
 ```
 
 ### 1.2 三大范式
@@ -630,16 +679,79 @@ func loadDataInfile(db *sql.DB, filePath string) error {
 
 ## 第三部分：MySQL 原理
 
-### 3.1 MySQL 版本对比
+### 3.1 MySQL 版本与发布策略
 
-| 特性 | MySQL 5.7 | MySQL 8.0+ |
-|------|-----------|------------|
-| 默认字符集 | latin1 | utf8mb4 |
-| 窗口函数 | 不支持 | 支持 |
-| CTE (WITH) | 不支持 | 支持 |
-| 隐藏索引 | 不支持 | 支持 |
-| 数据字典 | 文件存储 | 事务性存储 |
-| JSON 函数 | 基础支持 | 完整支持 |
+#### 版本发布策略（2024 年起）
+
+MySQL 采用双轨发布策略：
+
+| 类型 | 代表版本 | 特点 | 支持周期 | 适用场景 |
+|------|----------|------|----------|----------|
+| **LTS (长期支持)** | 8.4.x | 稳定、无功能移除、仅修复 | 5年Premier + 3年Extended | 生产环境、企业级 |
+| **Innovation (创新)** | 9.x | 新特性、快速迭代 | 到下个版本发布 | 开发测试、尝鲜 |
+
+> **升级路径**：8.4 LTS → 9.x Innovation → 下一个 LTS（预计 9.7 LTS）
+>
+> 参考：[MySQL Releases: Innovation and LTS](https://dev.mysql.com/doc/refman/9.1/en/mysql-releases.html)
+
+#### 版本特性对比
+
+| 特性 | MySQL 5.7 | MySQL 8.0/8.4 LTS | MySQL 9.x |
+|------|-----------|-------------------|-----------|
+| **发布时间** | 2015 | 8.0: 2018 / 8.4: 2024 | 9.0: 2024-07 |
+| **支持状态** | ⚠️ EOL (2023-10) | ✅ 当前 LTS | ✅ Innovation |
+| **默认字符集** | latin1 | utf8mb4 | utf8mb4 |
+| **默认认证插件** | mysql_native_password | caching_sha2_password | caching_sha2_password |
+| **mysql_native_password** | ✅ 默认 | ⚠️ 弃用 | ❌ **已移除** |
+| **窗口函数** | ❌ | ✅ | ✅ |
+| **CTE (WITH)** | ❌ | ✅ | ✅ |
+| **JSON 函数** | 基础 | 完整 | 完整 |
+| **隐藏索引** | ❌ | ✅ | ✅ 默认不可见 |
+| **函数索引** | ❌ | ✅ | ✅ |
+| **降序索引** | ❌ | ✅ | ✅ |
+| **VECTOR 类型** | ❌ | ❌ | ✅ **新增** |
+| **JavaScript 存储过程** | ❌ | ❌ | ✅ 企业版 |
+
+#### MySQL 9 重要变更
+
+##### 新增特性
+
+| 特性 | 说明 | 版本 |
+|------|------|------|
+| **VECTOR 数据类型** | 支持向量存储，用于 AI/ML 场景 | 9.0+ |
+| **JavaScript 存储过程** | 使用 JS 编写存储过程（企业版） | 9.0+ |
+| **新索引默认不可见** | 创建索引后默认 INVISIBLE，防止意外影响查询计划 | 9.0+ |
+| **性能提升** | 读写性能提升约 7-40%（场景相关） | 9.0+ |
+
+##### VECTOR 数据类型
+
+```sql
+-- MySQL 9.0+ 支持向量类型，用于 AI/机器学习场景
+CREATE TABLE embeddings (
+    id INT PRIMARY KEY,
+    embedding VECTOR(128)  -- 128 维向量，最大 16383 维
+);
+
+-- 限制：不能作为主键、外键、唯一键、分区键
+-- 只能用于 InnoDB 存储引擎
+```
+
+##### 移除的功能
+
+| 移除项 | 说明 | 影响 |
+|--------|------|------|
+| **mysql_native_password** | 认证插件完全移除 | 旧客户端需升级 |
+| **部分存储引擎** | ARCHIVE, BLACKHOLE, FEDERATED, MEMORY, MERGE | 使用这些引擎的需迁移到 InnoDB |
+
+#### 版本选择建议
+
+| 场景 | 推荐版本 | 原因 |
+|------|----------|------|
+| 新项目生产环境 | **MySQL 8.4 LTS** | 长期支持、稳定 |
+| 已有 8.0 生产环境 | **MySQL 8.4 LTS** | 平滑升级、同系列 |
+| 需要 VECTOR/AI 特性 | **MySQL 9.x** | 新特性支持 |
+| 开发测试环境 | **MySQL 9.x** | 体验新特性 |
+| 旧系统仍在 5.7 | **尽快升级到 8.4** | 5.7 已停止支持 |
 
 ### 3.2 存储引擎对比
 
@@ -807,35 +919,270 @@ B+ 树（数据库专用）：数据只在叶子节点 + 叶子链表
 
 ---
 
-#### 索引分类总览
+#### 索引分类总览（按功能分类）
 
-##### 按数据结构分
+| 索引类型 | 数据结构 | 唯一性 | 叶子存储 | 语法 | 说明 |
+|----------|----------|--------|----------|------|------|
+| **主键索引** | B+树 | 唯一+非空 | 完整行数据 | `PRIMARY KEY (id)` | 聚簇索引，每表仅1个 |
+| **唯一索引** | B+树 | 唯一+可空 | 主键值 | `UNIQUE INDEX (col)` | 二级索引 |
+| **普通索引** | B+树 | 无约束 | 主键值 | `INDEX (col)` | 二级索引 |
+| **组合索引** | B+树 | 可选唯一 | 主键值 | `INDEX (a,b,c)` | 多列拼接，最左前缀 |
+| **前缀索引** | B+树 | 可选唯一 | 主键值 | `INDEX (col(N))` | 只索引前N个字符 |
+| **全文索引** | **倒排索引** | - | 词→文档映射 | `FULLTEXT (content)` | 分词搜索，5.6+ |
+| **空间索引** | **R树** | - | 空间数据 | `SPATIAL (geo)` | GIS场景 |
 
-| 索引类型 | 数据结构 | 说明 | InnoDB 支持 |
-|----------|----------|------|-------------|
-| **B+ 树索引** | B+ 树 | 默认索引，支持范围查询、排序 | ✅ 默认 |
-| **Hash 索引** | 哈希表 | O(1) 等值查询，不支持范围 | ❌ 仅自适应哈希（内部优化） |
-| **全文索引** | 倒排索引 | 文本关键词搜索 | ✅ 5.6+ |
-| **空间索引** | R 树 | 地理数据（GIS） | ✅ |
+> **关于 Hash 索引**：Hash 是数据结构分类，不是功能分类。InnoDB **不支持**用户显式创建 Hash 索引，只有内部的"自适应哈希索引"（Adaptive Hash Index），由引擎自动管理。Memory 引擎支持 Hash 索引。
 
-##### 按功能分（全部基于 B+ 树）
+---
 
-| 索引类型 | 别名 | 说明 | 语法 |
-|----------|------|------|------|
-| **主键索引** | 聚簇索引、聚集索引、Clustered Index | 唯一非空，叶子存完整数据 | `PRIMARY KEY (id)` |
-| **唯一索引** | Unique Index | 唯一可空，属于二级索引 | `UNIQUE INDEX idx (col)` |
-| **普通索引** | 二级索引、辅助索引、Secondary Index | 无约束 | `INDEX idx (col)` |
-| **组合索引** | 联合索引、复合索引、Composite Index | 多列组成一个索引 | `INDEX idx (a, b, c)` |
-| **前缀索引** | - | 只索引字符串前 N 个字符 | `INDEX idx (col(10))` |
+#### 索引的物理存储：多棵独立 B+ 树
 
-##### 特殊索引（非 B+ 树）
+**每个索引都是一棵独立的 B+ 树**。一张表有 N 个索引，就有 N 棵 B+ 树，全部存储在同一个 `.ibd` 文件中（MySQL 5.6+ 独立表空间模式）。
 
-| 索引类型 | 数据结构 | 说明 | 语法 |
-|----------|----------|------|------|
-| **全文索引** | **倒排索引** | 分词后建立词→文档映射 | `FULLTEXT INDEX idx (content)` |
-| **空间索引** | **R 树** | 多维空间数据 | `SPATIAL INDEX idx (geo)` |
+##### 示例
 
-#### 索引失效场景（⭐重要）
+```sql
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY,              -- 索引1：聚簇索引
+    email VARCHAR(100) UNIQUE,          -- 索引2：唯一索引
+    name VARCHAR(50),
+    age INT,
+    city VARCHAR(50),
+    INDEX idx_name (name),              -- 索引3：普通索引
+    INDEX idx_age_city (age, city)      -- 索引4：组合索引
+);
+```
+
+**这张表有 4 棵独立的 B+ 树：**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        users 表的 .ibd 文件                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  【B+树1】聚簇索引 (PRIMARY KEY)                                 │
+│  ┌─────────────────────────────────────┐                        │
+│  │ 叶子节点存储: 完整行数据              │                        │
+│  │ (id=1, email, name, age, city, ...) │                        │
+│  └─────────────────────────────────────┘                        │
+│                                                                 │
+│  【B+树2】唯一索引 (email)                                       │
+│  ┌─────────────────────────────────────┐                        │
+│  │ 叶子节点存储: (email值, 主键id)       │                        │
+│  │ ("a@test.com", 1)                   │                        │
+│  └─────────────────────────────────────┘                        │
+│                                                                 │
+│  【B+树3】普通索引 (name)                                        │
+│  ┌─────────────────────────────────────┐                        │
+│  │ 叶子节点存储: (name值, 主键id)        │                        │
+│  │ ("frank", 1)                        │                        │
+│  └─────────────────────────────────────┘                        │
+│                                                                 │
+│  【B+树4】组合索引 (age, city)                                   │
+│  ┌─────────────────────────────────────┐                        │
+│  │ 叶子节点存储: (age, city, 主键id)     │                        │
+│  │ (25, "Beijing", 1)                  │                        │
+│  └─────────────────────────────────────┘                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+##### 聚簇索引 vs 二级索引存储对比
+
+| 索引类型 | 叶子节点存储 | 查询时 |
+|----------|--------------|--------|
+| 聚簇索引（主键） | **完整行数据** | 直接返回 |
+| 所有二级索引（唯一/普通/组合/前缀） | **索引列值 + 主键值** | 需要**回表** |
+
+##### 回表过程
+
+```sql
+SELECT * FROM users WHERE name = 'frank';
+```
+
+```
+1. 在 name 索引的B+树中查找 'frank'
+   → 找到叶子节点: (name='frank', id=1)
+
+2. 拿到 id=1，去聚簇索引的B+树查找
+   → 找到叶子节点: 完整行数据
+
+3. 返回结果
+```
+
+##### 组合索引的排列方式
+
+组合索引的 B+ 树按**最左列优先**排序：
+
+```
+组合索引 (a, b, c) 的排列顺序：
+(1,1,1) → (1,1,2) → (1,2,1) → (2,1,1) → ...
+
+先按 a 排序 → a 相同按 b 排序 → b 相同按 c 排序
+```
+
+这就是**最左前缀原则**的来源：只有从最左列开始的查询才能利用索引的有序性。
+
+##### 同一字段存在于多个索引
+
+一个字段可以同时是唯一索引，又参与组合索引，此时会形成**多棵独立的 B+ 树**，数据冗余存储。
+
+```sql
+CREATE TABLE orders (
+    id BIGINT PRIMARY KEY,
+    order_no VARCHAR(32),
+    user_id BIGINT,
+    status INT,
+    UNIQUE INDEX idx_order_no (order_no),              -- 唯一索引
+    INDEX idx_user_status (user_id, order_no, status)  -- 组合索引（也包含 order_no）
+);
+```
+
+**`order_no` 字段在两棵 B+ 树中各存一份：**
+
+```
+┌───────────────────────────────────────────────────────────────────────────┐
+│                          orders 表的 .ibd 文件                             │
+├───────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  【B+树1】聚簇索引 (id)                                                    │
+│  └─ 叶子: 完整行数据                                                       │
+│                                                                           │
+│  【B+树2】唯一索引 idx_order_no                                            │
+│  ┌─────────────────────────────────────────┐                              │
+│  │ 按 order_no 排序                         │                              │
+│  │ 叶子: (order_no='ORD001', id=1)         │                              │
+│  │       (order_no='ORD002', id=2)         │                              │
+│  └─────────────────────────────────────────┘                              │
+│                                                                           │
+│  【B+树3】组合索引 idx_user_status                                         │
+│  ┌─────────────────────────────────────────┐                              │
+│  │ 按 (user_id, order_no, status) 排序      │                              │
+│  │ 叶子: (100, 'ORD001', 1, id=1)          │  ← order_no 再次存储          │
+│  │       (100, 'ORD003', 2, id=3)          │                              │
+│  │       (200, 'ORD002', 1, id=2)          │                              │
+│  └─────────────────────────────────────────┘                              │
+│                                                                           │
+└───────────────────────────────────────────────────────────────────────────┘
+```
+
+**查询时使用哪个索引？由优化器根据成本估算决定：**
+
+| 查询条件 | 使用的索引 | 原因 |
+|----------|------------|------|
+| `WHERE order_no = 'ORD001'` | idx_order_no | 唯一索引等值查询最精确 |
+| `WHERE user_id = 100` | idx_user_status | 满足最左前缀 |
+| `WHERE user_id = 100 AND order_no = 'ORD001'` | 优化器选择 | 通常选 idx_order_no（更精确） |
+| `WHERE order_no = 'ORD001' AND status = 1` | idx_order_no | 组合索引不满足最左前缀 |
+
+**设计建议**：
+
+| 情况 | 建议 |
+|------|------|
+| 字段需要唯一约束 + 经常单独查询 | ✅ 保留唯一索引 |
+| 组合索引主要用于其他列开头的查询 | ✅ 两个索引都保留 |
+| 组合索引只是为了查这个字段 | ❌ 冗余，考虑移除 |
+
+> **代价**：同一字段在多个索引中重复存储，增加写入开销和存储空间。
+
+---
+
+#### MySQL 8.0+ 索引新特性
+
+| 特性 | 引入版本 | 说明 | 语法 |
+|------|----------|------|------|
+| **函数索引** | 8.0 | 对表达式建索引 | `INDEX ((YEAR(date)))` |
+| **降序索引** | 8.0 | 真正降序存储，非仅语法支持 | `INDEX (col DESC)` |
+| **隐藏索引** | 8.0 | 测试删除索引的影响，不实际删除 | `ALTER INDEX idx INVISIBLE` |
+| **新索引默认不可见** | **9.0** | 创建索引后默认 INVISIBLE，需手动启用 | `ALTER INDEX idx VISIBLE` |
+
+##### MySQL 9 索引行为变更
+
+**重要变更**：MySQL 9.0 创建的新索引**默认不可见**（INVISIBLE），优化器不会使用。
+
+```sql
+-- MySQL 8.0：创建后立即生效
+CREATE INDEX idx_name ON users(name);  -- 优化器立即使用
+
+-- MySQL 9.0：创建后默认不可见
+CREATE INDEX idx_name ON users(name);  -- 优化器忽略
+ALTER TABLE users ALTER INDEX idx_name VISIBLE;  -- 手动启用
+```
+
+**目的**：防止新索引意外改变查询计划，导致性能回退。DBA 可以先创建索引，测试后再启用。
+
+---
+
+#### MySQL 8.0+ 优化器新特性（非索引）
+
+
+##### 索引跳跃扫描 (Index Skip Scan)
+
+| 项目 | 说明 |
+|------|------|
+| **类型** | 优化器执行策略，不是索引 |
+| **引入版本** | MySQL 8.0.13+ |
+| **用户能否创建** | ❌ 不能，由优化器自动决定 |
+| **控制方式** | `SET optimizer_switch = 'skip_scan=on/off'` |
+| **EXPLAIN 标识** | `Using index for skip scan` |
+
+**作用**：当组合索引最左列基数很低时，即使查询不包含最左列，也能利用索引。
+
+```sql
+-- 组合索引 (gender, age)，gender 只有 '男'/'女' 两个值
+-- 传统：WHERE age = 25 无法使用索引（不满足最左前缀）
+-- 8.0.13+：优化器可能自动转换为跳跃扫描
+
+EXPLAIN SELECT * FROM users WHERE age = 25;
+-- Extra: Using index for skip scan
+```
+
+**触发条件**（需全部满足）：
+- MySQL 8.0.13+
+- 最左列基数很低（distinct 值少）
+- 优化器成本估算认为跳跃扫描更优
+
+
+##### 直方图 (Histogram)
+
+| 项目 | 说明                                     |
+|------|----------------------------------------|
+| **类型** | 统计信息                                   |
+| **引入版本** | MySQL 8.0                              |
+| **用户能否创建** | ✅ **可以手动创建**                           |
+| **存储位置** | `information_schema.COLUMN_STATISTICS` |
+| **主要用途** | 非索引列的数据分布统计                            |
+
+**作用**：帮助优化器更准确地估算数据分布，做出更优的执行计划。
+
+```sql
+-- 创建直方图（桶数 1-1024，官方建议从 32 开始）
+ANALYZE TABLE orders UPDATE HISTOGRAM ON status WITH 32 BUCKETS;
+
+-- 查看直方图
+SELECT * FROM information_schema.COLUMN_STATISTICS
+WHERE table_name = 'orders';
+
+-- 删除直方图
+ANALYZE TABLE orders DROP HISTOGRAM ON status;
+```
+
+**两种类型**：
+
+| 类型 | 条件 | 说明 |
+|------|------|------|
+| **Singleton** | distinct 值 ≤ 桶数 | 一个桶存一个值 |
+| **Equi-height** | distinct 值 > 桶数 | 一个桶存一个范围 |
+
+**注意**：
+- 直方图主要用于**非索引列**
+- 如果有范围优化器可用，优化器**优先使用范围优化器**而非直方图
+- 直方图按需创建，不会在表数据修改时自动更新
+
+
+---
+
+#### 索引失效场景
 
 > **核心原则**：是否走索引由**优化器**决定，取决于**成本估算**。以下是常见失效场景，但 MySQL 8.0 做了很多优化。
 
@@ -872,17 +1219,7 @@ SELECT * FROM users WHERE name = 'frank' OR age = 30;
 -- ✅ 给 age 加索引，或拆分为 UNION
 ```
 
-##### MySQL 8.0 索引新特性
-
-| 特性 | 说明 |
-|------|------|
-| **索引跳跃扫描** | 组合索引 (gender,age)，即使不查 gender 也能用索引 |
-| **函数索引** | 对表达式建索引：`INDEX ((UPPER(name)))` |
-| **隐藏索引** | 测试删除索引的影响：`ALTER TABLE t ALTER INDEX idx INVISIBLE` |
-| **降序索引** | 真正的降序存储，优化 ORDER BY DESC |
-| **直方图** | 统计数据分布，优化器更准确 |
-
-### 3.4 日志系统（⭐高频）
+### 3.4 日志系统
 
 #### 三大核心日志对比
 
@@ -914,7 +1251,7 @@ SELECT * FROM users WHERE name = 'frank' OR age = 30;
 | **ROW** | 行数据变更 | 复制精确、可用于数据恢复 | 日志量大（批量更新） | **推荐（默认）** |
 | **MIXED** | 自动选择 | 兼顾两者 | 复杂度高 | 特殊场景 |
 
-##### sync_binlog 参数（⭐重要）
+##### sync_binlog 参数
 
 | 值 | 行为 | 性能 | 安全性 |
 |----|------|------|--------|
@@ -929,7 +1266,7 @@ SELECT * FROM users WHERE name = 'frank' OR age = 30;
 - **问题**：数据页 16KB，磁盘扇区 512B，写数据页可能只写了一部分就崩溃（部分写失效）
 - **解决**：先写 redo log（顺序 IO、小量数据），崩溃后重放 redo log 恢复数据
 
-##### innodb_flush_log_at_trx_commit（⭐必背）
+##### innodb_flush_log_at_trx_commit
 
 | 值 | 行为 | 数据安全 | 性能 |
 |----|------|----------|------|
@@ -964,7 +1301,7 @@ SELECT * FROM users WHERE name = 'frank' OR age = 30;
 - **insert undo log**：INSERT 产生，事务提交后可立即删除
 - **update undo log**：UPDATE/DELETE 产生，需要保留到没有快照读使用
 
-#### 两阶段提交（2PC）⭐⭐⭐
+#### 两阶段提交
 
 **问题**：binlog 和 redo log 是两个独立的日志，如何保证一致性？
 
@@ -1022,17 +1359,6 @@ SELECT * FROM users WHERE name = 'frank' OR age = 30;
 | **性能** | 慢 | 快几个数量级 |
 | **崩溃恢复** | 数据丢失 | 重放日志恢复 |
 
-#### 最佳配置（生产环境）
-
-```sql
--- 数据安全优先（银行/金融）
-innodb_flush_log_at_trx_commit = 1
-sync_binlog = 1
-
--- 性能优先（可容忍少量丢失）
-innodb_flush_log_at_trx_commit = 2
-sync_binlog = 100
-```
 
 ### 3.5 MVCC (多版本并发控制)
 
