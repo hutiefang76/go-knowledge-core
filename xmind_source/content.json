@@ -1,0 +1,3266 @@
+[
+  {
+    "id": "fe462cc8-8756-4c3a-b0ed-02a48528cf00",
+    "revisionId": "e8f7a778-39fc-487e-8f74-d2ad468a131b",
+    "class": "sheet",
+    "rootTopic": {
+      "id": "0cfdf365-7a36-483f-9f4f-268e31c504f6",
+      "class": "topic",
+      "title": "Go 多线程知识点",
+      "structureClass": "org.xmind.ui.map.clockwise",
+      "children": {
+        "attached": [
+          {
+            "id": "ae22b54b-a11f-4fc4-bc97-b70527643eb2",
+            "title": "📌 **作者**: frank.hutiefang",
+            "titleUnedited": false
+          },
+          {
+            "id": "e0702b8f-f684-4ee5-bd32-c9d45e45947c",
+            "title": "📌 **知乎**: @大大大大大芳",
+            "titleUnedited": false
+          },
+          {
+            "id": "c1085ae5-d2b0-4804-b835-9fd419f118ae",
+            "title": "📌 **微信**: hutiefang",
+            "titleUnedited": false
+          },
+          {
+            "id": "fd60613d-a761-41f8-baa9-9d85d729b70a",
+            "title": "📌 **版本**: v1.3",
+            "titleUnedited": false
+          },
+          {
+            "id": "cea52006-a074-44e1-9142-0bfdd9f4cbfc",
+            "title": "📌 **更新时间**: 2026-01-27",
+            "titleUnedited": false
+          },
+          {
+            "id": "293bf0b0-6ec6-4747-a77b-794792c93f02",
+            "title": "第一部分：操作系统的多线程知识点",
+            "titleUnedited": false,
+            "children": {
+              "attached": [
+                {
+                  "id": "a5cec636-9019-489f-a97c-11edf7396250",
+                  "title": "1.1 进程 vs 线程",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "6f0cea04-cedf-48bb-a6f4-4d8a292c0d48",
+                        "title": "进程（Process）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "d52a8149-360c-4456-92ae-77294ba67c0b",
+                              "title": "操作系统资源分配的基本单位",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "213d74e8-c838-46ee-8aeb-f9c8f0598577",
+                              "title": "拥有独立的内存空间（32位系统4GB，64位系统可达128TB+）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "bbef9fad-bd8a-431d-834e-228e3b8accff",
+                              "title": "进程间通信需要IPC（管道、消息队列、共享内存等）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "f904f608-6b04-47a8-a900-9789cbe50dca",
+                              "title": "创建和切换开销较大（微秒至毫秒级）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "7cf35eb2-971c-4819-8c06-487cdb70b274",
+                              "title": "进程内存占用取决于程序本身，无固定范围",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "ea0cceca-e365-44d6-9b47-8bca94b1f74c",
+                        "title": "线程（Thread）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "3080869e-5084-46f9-9830-55f071256dc9",
+                              "title": "CPU调度的基本单位",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8825ee4e-56aa-43de-9b8a-a2c6fb04b0a8",
+                              "title": "共享进程的内存空间",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2bda5ca1-3d13-4278-b6e3-a14f1277c244",
+                              "title": "线程间通信通过共享内存",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "bc984bec-31f7-4421-9705-64625f16e2a4",
+                              "title": "创建和切换开销小（微秒级）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "7531fc36-ca19-44e0-86c7-b61a2c270c2d",
+                              "title": "线程栈大小通常为1MB-8MB（可配置），最大线程数受限于内存和ulimit配置",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "b79bc722-54bd-441c-93f2-e5a7a87b99f3",
+                        "title": "协程（Coroutine）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "0b403537-9d19-489d-8054-40a16aa290ce",
+                              "title": "用户态线程，由语言运行时调度",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "080193ad-c20f-4632-bbbc-8f02ce76d456",
+                              "title": "内存占用极小（KB级别）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "58b6ad51-c0ab-4278-8b0f-3fb97ecca305",
+                              "title": "上下文切换在用户态完成，不涉及系统调用",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "075fab8f-c61f-4fda-bbbe-3a9a1ddacdd0",
+                              "title": "可创建数量极大（百万级）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "45c6bffd-d8be-49b7-a528-4116426189c9",
+                              "title": "多种语言实现：Go的goroutine、Java虚拟线程、Kotlin协程、Python asyncio",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "fe7a0812-0566-43b2-b9a4-fccf006a5f61",
+                  "title": "1.2 并行 vs 并发",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "f2d223c7-1b9e-4a73-9062-b0a7f272fecb",
+                        "title": "并行（Parallelism）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "d89def48-7f04-4198-b139-82c56b22adce",
+                              "title": "多个CPU核心同时执行任务",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "eaf596c5-3c4e-45cc-a5cf-a8486a10d3c7",
+                              "title": "真正的同时执行",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "0f8ce863-e918-4930-b1a3-537986c13da8",
+                              "title": "需要多核硬件支持",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "f8c9dbd3-aa80-4faf-9166-b4f5d7759567",
+                              "title": "典型应用：科学计算、大数据处理（MapReduce、Spark）",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "ec5a2ec9-b34e-4fd6-8ea7-07ccd530f2d2",
+                        "title": "并发（Concurrency）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "801b9280-e9e7-4ebc-a6a4-89dc84bf6ce8",
+                              "title": "单个CPU核心通过时间分片模拟同时执行",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "ca65e0af-a888-4762-b409-b38c27119b64",
+                              "title": "逻辑上的同时，物理上的交替",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "4a3e7ab0-1262-4f9c-9cae-d554a11d719f",
+                              "title": "减少CPU空闲时间，提高资源利用率",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "abb4bfe7-5f87-496e-a1f7-b9dbf2f178a0",
+                              "title": "典型应用：Web服务器、GUI应用",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "7e43b9ce-9745-4839-b5eb-6bd3b1a7b9ba",
+                  "title": "1.3 CPU调度机制",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "27eeb3d2-9b68-4b69-a3ed-d59a2b762d69",
+                        "title": "时间分片（Time Slicing）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "01b84346-cca6-4020-b173-8ad84c59e9d7",
+                              "title": "CPU时间被划分为小的时间片（Linux通常1-10ms，Windows约15-30ms）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "bd03e77a-caf3-42be-bcd0-d80ce29b8393",
+                              "title": "每个线程运行一个时间片后切换到下一个",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "024477a7-5b6f-49bc-8f62-217bc9886f66",
+                              "title": "通过时钟中断触发上下文切换",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "4eccccf9-cd46-46c2-93ad-27e5fc955c13",
+                        "title": "上下文切换（Context Switch）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "7869aa10-a950-4089-917a-b4a0f3757506",
+                              "title": "保存当前线程的CPU状态（寄存器、PC指针等）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "6886f41d-6bcc-4411-b2ed-9ec3616b9d5a",
+                              "title": "恢复下一个线程的CPU状态",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "319384b8-a5bd-4025-9270-9b18500946ec",
+                              "title": "开销：内核态切换需要1-10μs，用户态切换约100-500ns（视硬件而定）",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "e6402dce-627a-4be5-a237-9b6c6fef313b",
+                        "title": "调度算法",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "9265d954-6d0f-447c-bbfb-2489d23e8b1a",
+                              "title": "FIFO（先来先服务）：简单但可能导致长任务阻塞短任务",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "6c010e99-a2eb-4cbe-9fb2-fbce1ab6b82d",
+                              "title": "Round Robin（轮转）：公平但上下文切换频繁",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "e627a65d-a9aa-4405-99f2-7792af1d5786",
+                              "title": "Priority Scheduling（优先级）：重要任务优先，但可能导致低优先级任务饥饿",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "a590d3e8-2139-4e43-a4e7-95f22472d720",
+                              "title": "Work Stealing（工作窃取）：空闲线程从忙碌线程窃取任务，Go的GMP（Goroutine，Machine（M），Processor（P））模型采用此算法",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "cae1126a-2264-48be-86ea-44cff861bf87",
+                  "title": "1.4 多线程问题",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "88cffa0f-cd2f-40e3-973f-ee2ebf76e49d",
+                        "title": "竞态条件（Race Condition）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "61ef02cd-d4bd-48a6-acb0-38af15b55d7a",
+                              "title": "多个线程同时访问共享资源，且至少有一个写操作",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "e18ba1ba-91e4-434b-a32a-e86ed7bd2e6f",
+                              "title": "结果依赖于线程执行顺序",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "488adde7-719a-4aa4-ae4c-0ac2fbd1484f",
+                              "title": "例子：`counter++` 操作不是原子的",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "bcefeb90-24f3-421b-9da6-f577d6774e6d",
+                        "title": "死锁（Deadlock）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "cdc15b8f-a16f-49ff-9a30-d984a24f97ca",
+                              "title": "两个或多个线程互相等待对方释放资源",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "6ad64e55-c8ac-4864-bb74-aea8ae52d68a",
+                              "title": "产生条件：",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "28b7f8db-58c3-4329-afa6-97892110f4c3",
+                                    "title": "互斥条件：资源不能共享",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "90b5e7a0-a494-41d6-ab7a-b2622831d4e8",
+                                    "title": "不可剥夺条件：资源只能由持有者释放",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "c7e336ec-a860-41ee-aa15-f6475b40235f",
+                                    "title": "请求与保持条件：持有资源同时请求新资源",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "e27a42e3-57e5-4861-8377-fa7914a958c1",
+                                    "title": "循环等待条件：进程间形成循环等待链",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "6207faf9-ffc2-4cc9-ac6a-b256bd5b0ee7",
+                        "title": "活锁（Livelock）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "5ea7f863-0e93-49e7-acae-b2e9c80416e8",
+                              "title": "线程不断改变状态，但无法取得进展",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "360fe931-8f90-4fb0-aae7-86dbba81574f",
+                              "title": "例子：两个线程互相礼让资源",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "4178734f-abcd-4ee4-b6e2-9d83336a32df",
+                        "title": "饥饿（Starvation）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "f53095bd-de54-4065-a0da-e87125405007",
+                              "title": "某个线程长期无法获得所需资源",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "9313935d-2a23-45dc-bc52-2569b8b220a7",
+                              "title": "原因：优先级调度、资源分配不公平",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "94354600-4d51-4143-ae37-51501aef61f6",
+            "title": "第二部分：Go语言基本的多线程使用",
+            "titleUnedited": false,
+            "children": {
+              "attached": [
+                {
+                  "id": "23d6eba7-a8da-46a6-8949-4f8d7e4831bf",
+                  "title": "2.1 Goroutine：Go的并发基石",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "f8a92bb6-4209-4204-bc7b-958b35235fdb",
+                        "title": "特性",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "d2c6434d-9e0d-49df-98cf-499cfe3f6b21",
+                              "title": "轻量级协程，由Go运行时调度",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "12b23d68-ca62-4cc0-92bf-f641cd7390a4",
+                              "title": "初始栈大小仅2KB，可动态增长",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "f4ecee97-c6ad-4a41-bb7b-365a329b9753",
+                              "title": "创建成本极低，可轻松创建百万级goroutine",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "a8fd5f97-89d5-4498-a72a-3f6c1c183da1",
+                        "title": "通过`go`关键字启动",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "0c925c04-2a04-4485-9145-1e602831e332",
+                              "title": "```go\n// 基本用法\ngo func() {\n    fmt.Println(\"这是一个goroutine\")\n}()\n\n// 带参数\ngo func(id int) {\n    fmt.Printf(\"Goroutine %d\\n\", id)\n}(1)\n```",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "5b29c749-3871-4d3b-b4e7-60a21bed51c3",
+                        "title": "GMP调度模型",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "0aa208c4-ffa3-4ac7-8f33-596bd233d538",
+                              "title": "G (Goroutine)：应用级协程",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "4daa34bb-4d44-4912-8313-6dccc611c9e6",
+                              "title": "M (Machine)：OS线程",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8febdd2b-9cf6-4fb4-b0fd-6dcb5fd73b27",
+                              "title": "P (Processor)：逻辑处理器，包含runqueue",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "f519f9da-1bb9-4526-9ebf-b500e1aa6b7e",
+                              "title": "工作窃取：空闲P从其他P的runqueue中窃取任务",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "5059a86b-0fba-4c8e-92b7-ace46dcbfb80",
+                                    "title": "当通过go关键字创建一个新的Goroutine时，该Goroutine会被放入到某个P的队列中等待执行",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "8dd96bf1-fbed-45cb-9a18-13e194b74b25",
+                  "title": "2.2 Channel：goroutine通信管道",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "9a3c181b-d38b-4035-b067-d1e307a27aa5",
+                        "title": "核心概念",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "cfb287ad-45c4-431f-9cce-c83ff4173a95",
+                              "title": "CSP（Communicating Sequential Processes）模型的核心",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2deb9518-9969-4ed9-b5c6-ae6c19672567",
+                              "title": "\"不要通过共享内存来通信，而应该通过通信来共享内存\"",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "55614b69-40a4-4f02-b48a-2c050a306a32",
+                              "title": "类型安全，编译时检查",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "6d1869b2-1264-4705-b7ce-e9e3d571f764",
+                        "title": "Channel的三组特性",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "29d4442c-febe-4da9-92c3-008b42c4bb7f",
+                              "title": "1. 同步 vs 异步（通信模式）",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "de1aa399-4b2c-46a9-a005-3bab367eb7a3",
+                                    "title": "模式: **同步** | 比喻: 柜台结账：顾客站着等，扣完款才能走 | 场景: 扣款必须确认成功",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "00b04117-8cb7-42dd-86f8-0b460feb32eb",
+                                    "title": "模式: **异步** | 比喻: 取号等餐：拿号就走，好了通知你 | 场景: 发短信、记日志",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "d81b088d-5071-4253-aa81-7c94bb6ca426",
+                                    "title": "📌 - 无缓冲 → **必然同步**",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "2dc2bf75-1868-489a-8c22-5e61c9e3e7e9",
+                                    "title": "📌 - 有缓冲 → **条件异步**（未满时异步，满了就变同步）",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "fc35c276-a170-41bd-9fd7-061bc669a7a1",
+                                    "title": "📌 -",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "157ed7e1-ae3f-4b38-9475-957986aac54a",
+                              "title": "2. 无缓冲 vs 有缓冲（实现方式）",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "a45e4a9a-8b59-41b6-8feb-603bbd0488a1",
+                                    "title": "类型: **无缓冲（低时延）** | 比喻: 一对一客服：必须等接起才能说话 | 用途: 支付回调（必须确认收到）",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "01a03346-dd19-4b26-9622-2f3e731bfb17",
+                                    "title": "类型: **小缓冲（综合）** | 比喻: 银行叫号机：最多10人等，第11个排队 | 用途: 普通订单队列",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "021a86d7-b01b-4924-8a50-0904a4e73143",
+                                    "title": "类型: **大缓冲（高吞吐）** | 比喻: 双11预售：先收1万单，慢慢处理 | 用途: 秒杀（需配合限流）",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "22133517-b07b-429f-84e4-52f27aca1d8a",
+                                    "title": "高并发 !=低时延 !=高吞吐",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "3532293d-33c6-4683-b0ad-39cd31fa1fc7",
+                                    "title": "```go\nch1 := make(chan int)      // 无缓冲，必然同步\nch2 := make(chan int, 10)  // 有缓冲，条件异步\n\nch2 <- 1  // 异步（未满）\nch2 <- 2  // 异步（未满）\n// ... 放满后\nch2 <- 11 // 阻塞！满了，变成同步\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "66d3920b-567d-4eaf-869d-61e669a0e69e",
+                              "title": "3. 双向 vs 单向（权限控制）",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "60bc9671-ff11-4942-9a0b-2fd838f8e6c7",
+                                    "title": "类型: **双向** | 比喻: 客服对讲机：能说能听，人多容易乱",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "dfd1ab02-600b-450d-8284-cd6c9a6fe3f2",
+                                    "title": "类型: **只发送** | 比喻: 订单投递口：前台只管扔进去",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "aad2cfc3-8d53-4bd0-a18e-38445a1f92f8",
+                                    "title": "类型: **只接收** | 比喻: 仓库取单窗口：仓库只管取出来",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "d855ac15-7aa2-4a69-b7a7-0e3a2a779e8d",
+                                    "title": "```go\n// 创建：永远双向\norderQueue := make(chan Order, 100)\n\n// 使用：传参时限制权限（编译器自动转换）\nfunc producer(ch chan<- Order, order Order) { ch <- order }  // 只能发\nfunc consumer(ch <-chan Order) { order := <-ch; _ = order }  // 只能收\n\ngo producer(orderQueue, Order{ID: 1})  // 自动转成只发送\ngo consumer(orderQueue)                 // 自动转成只接收\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "233b7357-6652-4863-9ebd-f339f429fbd6",
+                              "title": "实用矩阵：缓冲 × 方向（共9种组合）",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "daa1c744-ffa4-4821-a7c4-4345d927c143",
+                                    "title": "**无缓冲** | 双向(内部用): goroutine协调 | 只发送(生产者): 信号发送 | 只接收(消费者): 信号等待",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "e6276c75-e2aa-42e8-99df-60616a491642",
+                                    "title": "**小缓冲** | 双向(内部用): 事件队列 | 只发送(生产者): 日志写入 | 只接收(消费者): 流量处理",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "52db1c44-2abf-407a-9f7f-8455efbc5280",
+                                    "title": "**大缓冲** | 双向(内部用): 批处理 | 只发送(生产者): 高吞吐生产 | 只接收(消费者): 批量消费",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "91fd9d7f-c03f-4fbe-b436-0227725cdeef",
+                  "title": "2.3 同步原语",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "3adb7634-655c-4422-94ba-203c4bb80ba2",
+                        "title": "📌 **核心认知**：Channel用于goroutine间传递数据，同步原语用于协调goroutine的执行顺序和保护共享数据",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "265978ba-559d-4db7-a467-7558ec06c54f",
+                        "title": "sync.WaitGroup —— 等所有人到齐",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "45d1b1f0-1195-4492-a793-70b5172c5356",
+                              "title": "发起团购，需要凑齐5人才能发货",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "02d78824-4a07-4ab0-b1b6-f2a860d163a8",
+                              "title": "每有一人下单，计数+1；每有一人付款完成，计数-1",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "5c5e61ad-bd20-4d7d-ab8c-d6b18fefb7a9",
+                              "title": "主线程等待（Wait），直到计数归零才发货",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "cf926a9a-5d99-458c-98c1-fe2bfe1afa15",
+                                    "title": "方法: `Add(n)` | 比喻: 团购需要n人 | 作用: 增加等待计数",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "f2439a9a-7a39-4ea7-b888-f48ae8a6e189",
+                                    "title": "方法: `Done()` | 比喻: 又有1人付款完成 | 作用: 计数减1",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "82777e67-4cbc-48bd-bc75-df2064a971f4",
+                                    "title": "方法: `Wait()` | 比喻: 等凑齐了再发货 | 作用: 阻塞直到计数归零",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "364a63ad-091b-4990-af4d-48bc2ba8f325",
+                                    "title": "```go\nvar wg sync.WaitGroup\nwg.Add(3) // 需要等3个任务\n\nfor i := 0; i < 3; i++ {\n    go func(id int) {\n        defer wg.Done() // 完成一个，计数-1\n        处理订单(id)\n    }(i)\n}\n\nwg.Wait() // 等3个都完成，再继续\nfmt.Println(\"所有订单处理完毕\")\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "17ef21c9-e0c9-450e-a3ba-7971fdbf0b75",
+                        "title": "sync.Mutex —— 互斥锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "1450f361-44f2-4def-9a91-a6b5cfccfde0",
+                              "title": "试衣间一次只能进一个人",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2e2274c3-0068-4829-a502-360f29250db0",
+                              "title": "进去要锁门（Lock），出来要开门（Unlock）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1f548613-5bfa-47dc-b5fa-67244507bb9b",
+                              "title": "其他人在门口排队等",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "d733bea6-9663-488d-9668-72f3b177492f",
+                                    "title": "操作: `Lock()` | 比喻: 进试衣间，锁门 | 作用: 获取锁，其他人等待",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "ace141ff-5e82-4fb1-9003-3e0eb1d06017",
+                                    "title": "操作: `Unlock()` | 比喻: 出来，开门 | 作用: 释放锁，下一个进入",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "66552c84-0642-477c-a18a-b926c210cf1c",
+                                    "title": "```go\nvar mu sync.Mutex\nvar 库存 = 100\n\nfunc 扣库存() {\n    mu.Lock()         // 锁门\n    defer mu.Unlock() // 确保出来时开门\n    库存--            // 安全修改\n}\n\n// 100个goroutine同时扣库存，不会超卖\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "896b5f58-d782-418b-a782-aa61411dd3ea",
+                        "title": "sync.RWMutex —— 读写锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "ef2b7431-eca1-4b86-832b-d049a72f4981",
+                              "title": "看商品详情（读）：可以很多人同时看",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "5c59d0b5-bbd2-4d39-a8fb-7982a2a0d9f6",
+                              "title": "改商品价格（写）：必须清场，改完才能继续看",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "7f717c0a-3cfa-46a3-97be-e9dbfaf9a3ae",
+                              "title": "读多写少时，比Mutex效率高",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "ffed409f-a1cd-4392-9f97-c3fee0dbb582",
+                                    "title": "操作: `RLock()` | 比喻: 进店看商品 | 作用: 获取读锁，可多人同时",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "947eb144-e68e-4f89-8133-66601debce23",
+                                    "title": "操作: `RUnlock()` | 比喻: 看完离开 | 作用: 释放读锁",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "1ff07704-bbaa-4ea8-94e4-67cbaf9762c7",
+                                    "title": "操作: `Lock()` | 比喻: 清场改价格 | 作用: 获取写锁，独占",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "cc3a6f11-86b3-4eaf-b06d-64749959f314",
+                                    "title": "操作: `Unlock()` | 比喻: 改完开门 | 作用: 释放写锁",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "afa666b3-1e1f-4670-82f0-ff469c597f3b",
+                                    "title": "```go\nvar rwmu sync.RWMutex\nvar 商品价格 = 99.00\n\nfunc 查看价格() float64 {\n    rwmu.RLock()         // 读锁，可多人同时读\n    defer rwmu.RUnlock()\n    return 商品价格\n}\n\nfunc 修改价格(新价格 float64) {\n    rwmu.Lock()          // 写锁，独占\n    defer rwmu.Unlock()\n    商品价格 = 新价格\n}\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "6aa0dadf-ec46-4797-a285-92ec01567ae1",
+                        "title": "context —— 超时与取消",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "2addaba0-bc74-4ed3-b276-51f1440952c1",
+                              "title": "下单时设置\"30分钟超时\"",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "3ceabb4d-9192-4bfb-bf23-1abd0394caad",
+                              "title": "骑手（goroutine）随时检查是否超时或被取消",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "0c0756b9-14c9-4ace-92bf-739b064c655f",
+                              "title": "超时了就不送了，及时止损",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "0f915fcd-3cee-4876-bd3e-fe4273ba6387",
+                                    "title": "函数: `WithTimeout` | 比喻: 设置配送时限 | 作用: 超时自动取消",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "44854069-cdc7-45d9-aeb7-583c0cfe902d",
+                                    "title": "函数: `WithCancel` | 比喻: 用户可随时取消订单 | 作用: 手动取消",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "f0c93354-a94d-46fc-85da-5a769af2f75d",
+                                    "title": "函数: `ctx.Done()` | 比喻: 骑手检查订单状态 | 作用: 收到取消信号",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "1a573faa-0406-4244-8d18-47592b2012af",
+                                    "title": "函数: `cancel()` | 比喻: 用户点\"取消订单\" | 作用: 发出取消信号",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "a6566f09-b385-4690-8280-9c7ee038a93b",
+                                    "title": "```go\n// 设置2秒超时\nctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)\ndefer cancel() // 别忘了释放资源\n\nselect {\ncase 结果 := <-处理订单():\n    fmt.Println(\"订单完成:\", 结果)\ncase <-ctx.Done():\n    fmt.Println(\"超时了:\", ctx.Err()) // 及时止损\n}\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "6b12cc5e-6dd4-4e4a-888e-965634d5fd2e",
+                              "title": "调用外部API，防止卡死 → WithTimeout",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1c0bf43e-f128-4d4b-bbd4-f39a07614e13",
+                              "title": "用户取消操作，通知所有goroutine停止 → WithCancel",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "acdadc34-fcd0-46c8-9f91-b1473ab7d4f9",
+                              "title": "请求链路追踪，传递请求ID → WithValue",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "18a9cc5f-00ff-4280-8a0a-56056e58f081",
+                        "title": "同步原语选择矩阵",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "35ee83e1-195f-43e7-836e-3feda63af039",
+                              "title": "场景: 等多个goroutine完成 | 选择: WaitGroup | 理由: 团购凑单",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "3ec2b41f-0908-47aa-9b68-338dc636aaf1",
+                              "title": "场景: 保护共享变量（写多） | 选择: Mutex | 理由: 试衣间",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "12208a51-5afe-4ce4-88a5-b5676358d0ac",
+                              "title": "场景: 保护共享变量（读多写少） | 选择: RWMutex | 理由: 商品详情页",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "5323ef31-79de-49d1-ae99-f6f1c985f4be",
+                              "title": "场景: 超时控制 | 选择: context.WithTimeout | 理由: 外卖配送时限",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "eca28bf7-6abe-4037-9800-f9122619a176",
+                              "title": "场景: 手动取消 | 选择: context.WithCancel | 理由: 用户取消订单",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "7f1c1f96-f11e-4480-b00a-d8a87abf0c6a",
+                              "title": "场景: goroutine间传数据 | 选择: Channel | 理由: 不是同步原语，但更推荐",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "217f5d8f-d15d-42bf-bab1-05192d9c31c0",
+                  "title": "2.4 select语句：多路复用",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "c3ce2dc4-fcc7-455f-9cb8-304bd6a4ca10",
+                        "title": "同时监听多个channel操作",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "d248fdde-916f-4a55-ab76-63753831593f",
+                        "title": "非阻塞通信基础",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "4e1dcd19-eb5f-4edf-96be-558029ddfd55",
+                        "title": "实现超时、重试等模式",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "31678c54-91ef-4304-b888-ffdd01ff8d82",
+                              "title": "```go\nselect {\ncase data := <-ch1:\n    fmt.Println(\"Received from ch1:\", data)\ncase <-time.After(1 * time.Second):\n    fmt.Println(\"Timeout\")\ncase ch2 <- 42:\n    fmt.Println(\"Sent to ch2\")\ndefault:\n    fmt.Println(\"No communication ready\")\n}\n```",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "a79eebd9-1ee2-46ef-b7aa-5dbdfcf8d293",
+            "title": "第三部分：多线程问题和线程不安全",
+            "titleUnedited": false,
+            "children": {
+              "attached": [
+                {
+                  "id": "e7f60209-57ea-4445-8e22-96c6d1cd33f5",
+                  "title": "3.1 线程不安全的三大特性",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "14fcdb88-a7af-4dd3-bab7-addf2395a883",
+                        "title": "3.1.1 可见性（Visibility）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "18a6185b-e394-47ce-b212-11c803f7fde5",
+                              "title": "问题：一个goroutine修改共享变量后，其他goroutine可能看不到最新值，因为：",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "a5e6e708-072a-40e0-851d-c6b783537b62",
+                                    "title": "CPU缓存不一致（MESI协议）",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "c44be214-71cc-42db-83cf-4491ae86140c",
+                                    "title": "编译器优化重排序",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "3c19d4b5-e032-476e-a3b5-b77232953356",
+                                    "title": "处理器指令重排序",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "c3eb0913-1f52-4612-8f6c-9e7abcd20770",
+                              "title": "Go解决方案：",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "fb3ff912-2861-4a23-a72e-f1534c13ea13",
+                                    "title": "sync.Mutex：锁操作包含内存屏障，保证可见性",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "f62b35df-f7cf-4570-8559-783d7d633d3c",
+                                    "title": "sync/atomic：原子操作，包含内存屏障",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "25f11769-ee0b-44c4-af51-caeb8ff7c6ff",
+                                    "title": "Channel：通过channel通信天然保证可见性",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "d3aa3f42-b455-4b24-bf14-e040890302b1",
+                                    "title": "sync.Once：保证初始化操作只执行一次",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "41ae255d-7a0b-4eae-9ff2-b0653ac1d5d2",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "20c172aa-0e27-4fd0-b74f-35de59b0ec94",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "e4c2ee9b-2d32-4095-91ef-f121bf4e5226",
+                                          "title": "```go\nvar (\n    mu      sync.Mutex\n    flag    bool\n    counter int\n)\n\n// 通过锁保证可见性\nfunc writer() {\n    mu.Lock()\n    counter = 10\n    flag = true\n    mu.Unlock()\n}\n\nfunc reader() {\n    mu.Lock()\n    defer mu.Unlock()\n    if flag {\n        fmt.Println(counter) // 保证看到最新值\n    }\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "0fe1847d-2953-4b98-bd5b-ef0c8a60d2c2",
+                        "title": "3.1.2 原子性（Atomicity）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "8004f1e6-78d2-44ba-9409-f65ac3f4975f",
+                              "title": "问题：复合操作（如`counter++`）被中断，导致数据不一致：",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "c74c4a7e-6225-4d4c-bd39-fdc2ff6167f8",
+                                    "title": "读取counter值到CPU寄存器",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "1a45367f-be9e-4e76-83db-ed1e8af22269",
+                                    "title": "寄存器值+1",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "37ae1c03-d939-4448-8902-2bec177efac5",
+                                    "title": "写回counter",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "1476d8ce-428d-4c9c-bd06-ca7aea54d936",
+                              "title": "Go解决方案：",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "c9fd54ef-1cd9-42c1-8220-a02a4aa9bf43",
+                                    "title": "sync.Mutex：锁保护整个操作",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "9aa4f95d-6945-4b13-b87a-2675094aa3d5",
+                                    "title": "sync/atomic：原子操作（AddInt32, CompareAndSwap等）",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "e47c95ae-3ba6-4794-af2d-b80a3fac1161",
+                                    "title": "sync.Map：并发安全的map",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "e92367c5-3252-4c4c-bcb4-2eda0271f328",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "4f70527b-5c08-45e7-b81e-2963f5d7dc99",
+                                          "title": "(代码块)",
+                                          "titleUnedited": false,
+                                          "children": {
+                                            "attached": [
+                                              {
+                                                "id": "58874742-19f0-4e72-a7d4-87e25d4422b9",
+                                                "title": "```go\nvar counter int32\n\n// 原子操作\nfunc atomicIncrement() {\n    atomic.AddInt32(&counter, 1)\n}\n\n// CAS操作\nfunc compareAndSwap(old, new int32) bool {\n    return atomic.CompareAndSwapInt32(&counter, old, new)\n}\n```",
+                                                "titleUnedited": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "ee590df7-76dc-4af4-b736-0ca7a39fe4b9",
+                        "title": "3.1.3 有序性（Orderliness）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "9ec52650-32eb-4252-b85d-fb39ef77b1ff",
+                              "title": "📌 **happens-before（发生在...之前）**：不是真正的时间顺序，而是\"保证能看到\"的顺序。如果A happens-before B，那么A的结果对B可见。",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "c7c984e2-6f01-4f8c-8aef-7f74c69cc31d",
+                              "title": "仓库发货（写数据） happens-before 用户签收（读数据）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "ac3919ab-8c80-4411-8742-2abb862073ab",
+                              "title": "只有确认发货了，用户才能签收到正确的商品",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "b3d982f2-ad88-4332-95f6-6ebebf1b2fdd",
+                              "title": "问题：编译器和处理器为了优化性能，可能重排序指令，导致程序行为不符合预期。",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "7577582d-da9a-46a3-b033-4d911f31ddcf",
+                                    "title": "Go内存模型保证的happens-before关系：",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "a2f9d447-93c6-4430-9d04-c4594ba16746",
+                                          "title": "单个goroutine内，按程序顺序happens-before",
+                                          "titleUnedited": false
+                                        },
+                                        {
+                                          "id": "4a9b35ce-8583-4ac3-b814-2521438deba2",
+                                          "title": "无缓冲channel：发送完成 happens-before 接收完成",
+                                          "titleUnedited": false
+                                        },
+                                        {
+                                          "id": "73f31a23-e140-4dda-803d-708d57d731d5",
+                                          "title": "有缓冲channel：第k次接收完成 happens-before 第k+C次发送完成（C为缓冲大小）",
+                                          "titleUnedited": false
+                                        },
+                                        {
+                                          "id": "58bb5e90-a0b0-4238-b503-d1aefe3c8903",
+                                          "title": "channel关闭：close happens-before 接收方收到零值",
+                                          "titleUnedited": false
+                                        },
+                                        {
+                                          "id": "57de473e-d64c-4039-9434-bfd055f94f43",
+                                          "title": "锁操作：解锁happens-before后续加锁",
+                                          "titleUnedited": false
+                                        },
+                                        {
+                                          "id": "d8cb31a9-37a6-44f9-babb-7785212477a3",
+                                          "title": "sync.Once.Do：初始化happens-before后续调用",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "bb7b7354-3aa2-4c04-8bd4-8e3475544d65",
+                              "title": "Go解决方案：",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "c4b668d1-7b8e-4170-a251-109d1456125d",
+                                    "title": "Channel：通过通信保证顺序",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "46845992-eab6-4f04-b204-a04db9a874e3",
+                                    "title": "sync.WaitGroup：等待特定操作完成后再继续",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "8b1679d8-cdb7-424d-a095-1fb5c466c7e9",
+                                    "title": "sync.Once：保证初始化顺序",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "d791e8f0-7f9b-4fbb-994c-1a8b3179e270",
+                                          "title": "```go\n// 错误示例：没有happens-before保证（存在数据竞争）\nvar data = 0\nvar ready = false\n\ngo func() {\n    data = 42      // 写数据\n    ready = true   // 可能被重排序到data=42之前！\n}()\n\n// 问题1：主goroutine可能在子goroutine启动前就检查ready\n// 问题2：即使用循环等待，也可能因编译器优化永远看不到ready=true\n// 问题3：即使看到ready=true，data也可能因重排序仍为0\nfor !ready {\n    // 忙等待（本身也有问题，仅作演示）\n}\nfmt.Println(data) // 可能打印0！\n\n// 正确做法：用channel建立happens-before关系\ndone := make(chan bool)\n\ngo func() {\n    data = 42\n    done <- true  // 发送 happens-before 接收\n}()\n\n<-done           // 接收\nfmt.Println(data) // 保证打印42\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "90474bf9-d78f-4e3a-846d-82c36653dad3",
+                  "title": "3.2 隔离性（Isolation）",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "5bd89129-2db2-4b00-b7ac-a05e207a3f8f",
+                        "title": "问题：不同goroutine之间数据相互干扰，特别是局部状态。",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "8e00e041-05ca-419f-b956-b4195f868410",
+                        "title": "Go解决方案：",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "f52c7c03-707d-4d50-a9ef-4dc7ee116f58",
+                              "title": "Goroutine局部变量：每个goroutine有自己的栈空间",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "87f8084e-2fef-4166-8207-64e9c324496e",
+                              "title": "context.Value：请求范围数据隔离",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "80fcaf09-0950-4d57-ac56-ed6b84d0dcbe",
+                              "title": "sync.Pool：对象池，减少GC压力，但注意隔离性",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "fc6c2906-0c6a-4352-8275-724c655f8afb",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "ecfe1b37-3224-4d27-990a-d972a1a0f578",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "4fc451d0-cdbe-41c8-87b8-4172f2ec2018",
+                                          "title": "```go\n// context.Value隔离\ntype keyType string\nconst requestIDKey keyType = \"request_id\"\n\nfunc handleRequest(ctx context.Context) {\n    requestID := ctx.Value(requestIDKey).(string)\n    // 每个请求有自己的requestID\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "dc20cd09-6765-46ef-b155-322abaf97420",
+                  "title": "3.3 不可变性（Immutability）",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "d40de490-b146-4492-9c68-f8d1d854cc0f",
+                        "title": "问题：可变数据导致并发复杂性。",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "37b71837-85ae-4ab3-b040-f27751508e4c",
+                        "title": "Go解决方案：",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "4019c79c-3b4f-4a38-ad3d-7775a55f79fe",
+                              "title": "字符串不可变：Go字符串天生不可变",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "92e59df6-4433-465e-b778-f8c351eb9b68",
+                              "title": "不可变数据结构：创建新对象而不是修改原对象",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2c6f5f69-b0a0-4ddf-a806-a8ae1b4717ba",
+                              "title": "sync/atomic.Value：原子地存储和加载不可变对象",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "9ce0a1f1-8026-4777-8b1d-015ca7fb2091",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "e4fdeb34-2252-48f7-86e4-48e8bebb0e99",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "2767f05e-601f-4343-b9e8-e2e57195da19",
+                                          "title": "```go\n// 不可变配置\ntype Config struct {\n    host    string\n    port    int\n    timeout time.Duration\n}\n\n// 创建新配置，而不是修改旧配置\nfunc (c *Config) WithHost(newHost string) *Config {\n    return &Config{\n        host:    newHost,\n        port:    c.port,\n        timeout: c.timeout,\n    }\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "a149323b-b595-4586-8af5-11123c09d791",
+                  "title": "3.4 Go标准库容器的线程安全性",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "dd6d1245-8325-4c1a-9f64-676a751b1eef",
+                        "title": "默认不安全的容器：",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "026d17a2-9458-45a3-b63c-47be06200563",
+                              "title": "map：非并发安全，需要sync.Mutex或sync.RWMutex保护",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "12d90596-72c5-4886-838f-088df3902692",
+                              "title": "slice：非并发安全，需要锁保护",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "6e4f2bbd-5f12-47b7-b0f0-344c13ddaab6",
+                              "title": "container/list.List：非并发安全",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "76f55550-634b-48a8-b272-07f0d2d6ac5e",
+                        "title": "并发安全的容器：",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "5435e087-d61c-4945-aea9-7762d4060eae",
+                              "title": "sync.Map：并发安全的map，适用于读多写少场景",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2ed4d8a0-714d-4f58-90e5-e23809923f77",
+                              "title": "sync.Pool：对象池，减少GC压力（注意：获取的对象状态不确定，需使用前重置）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "7527d6cd-e378-46b1-a894-232313f24df9",
+                              "title": "channel：并发安全的通信管道",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1b41adb5-fe9d-4c7d-b8fc-92e350ba798a",
+                              "title": "atomic.Value：原子地存储和加载任意类型",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "c0eb0544-9b8c-431d-9ce7-e0cdbe757759",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "22e1bdaa-4ff8-4261-bfe1-14db355041a6",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "df2c2d1b-ed2a-4e1a-b7a4-bb63345c9cec",
+                                          "title": "```go\n// sync.Map 使用\nvar safeMap sync.Map\n\n// 存储\nsafeMap.Store(\"key\", \"value\")\n\n// 读取\nif val, ok := safeMap.Load(\"key\"); ok {\n    fmt.Println(val)\n}\n\n// 删除\nsafeMap.Delete(\"key\")\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "b4059ae0-7d7b-437b-b9ca-d95495cf5c48",
+                        "title": "sync.Map vs 普通map+锁：",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "bc547054-4163-41d3-968f-24e6c757a91b",
+                              "title": "sync.Map：适用于读多写少、键值不频繁变化的场景",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "c8eb6222-bd83-4386-becb-174bfa9ed94c",
+                              "title": "map+sync.RWMutex：适用于写操作较多、需要复杂操作的场景",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "7254cec3-3440-4e0f-8d00-e199d6b0c8e9",
+            "title": "第四部分：Go语言并发最佳实践",
+            "titleUnedited": false,
+            "children": {
+              "attached": [
+                {
+                  "id": "d96e129e-8009-4834-b70a-87731835fdf7",
+                  "title": "4.1 设计原则",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "47e68f2a-bd23-4625-add9-9f1fca515bdd",
+                        "title": "优先使用channel：遵循CSP原则，避免共享内存",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "9932c5f2-464c-4055-9d4b-0a59e767f7c8",
+                        "title": "最小化共享状态：只在必要时共享数据",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "676a7e07-239e-4f1a-8f15-1a884c67340f",
+                        "title": "使用context传递取消信号：优雅关闭goroutine",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "22af3839-c9bf-4f24-98bd-92e434541074",
+                        "title": "避免goroutine泄漏：确保每个goroutine都有退出条件",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "983140f0-79ea-4bc4-b77e-dbfe915d8f91",
+                        "title": "不要过度优化：先保证正确性，再考虑性能",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "4538f6ef-bc1d-4bb9-ab7b-07bdd79ef724",
+                  "title": "4.2.1 锁优化",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "4236667d-f98c-4854-8889-cce6e46bee81",
+                        "title": "避免不必要的锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "de3f46b3-9f40-42ae-868b-f1a72926da7a",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "3fb324d4-424a-41db-ae77-f11af9b0bf54",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "2b9a6aa0-2789-4878-bc82-cfea1d65b83c",
+                                          "title": "```go\n// 坏：整个函数加锁\nfunc badIncrement() {\n    mu.Lock()\n    defer mu.Unlock()\n    // 1. 读取配置（不需要锁）\n    config := readConfig()\n    // 2. 计算（不需要锁）\n    result := compute(config)\n    // 3. 更新共享状态（需要锁）\n    sharedData = result\n}\n\n// 好：只锁需要的部分\nfunc goodIncrement() {\n    config := readConfig()\n    result := compute(config)\n    \n    mu.Lock()\n    sharedData = result\n    mu.Unlock()\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "146645e7-7593-47c8-b02e-db2da6d8186f",
+                        "title": "使用细粒度锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "2afd96d2-1658-4b4a-b114-346fc2ec72b8",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "6959c048-f1a4-4a79-811e-d04ee673a841",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "630147fa-5f95-4482-922b-f33ec68cca96",
+                                          "title": "```go\n// 粗粒度锁\nvar globalMu sync.Mutex\nvar globalData map[string]int\n\n// 细粒度锁（分片）\ntype Shard struct {\n    mu   sync.Mutex\n    data map[string]int\n}\n\ntype ShardedMap []*Shard\n\nfunc (m ShardedMap) GetShard(key string) *Shard {\n    // 哈希分片\n    hash := fnv.New32a()\n    hash.Write([]byte(key))\n    shardIndex := hash.Sum32() % uint32(len(m))\n    return m[shardIndex]\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "fe544616-6756-48ba-aa8c-b304523019e7",
+                        "title": "读写锁优化",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "99a29355-71e9-4fce-87b6-dd744fdf9001",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "5652e81c-d7c4-44f7-a997-7205462804ab",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "55a425da-5195-44b3-b74a-9bb4bfd5ff5a",
+                                          "title": "```go\n// 读多写少场景使用RWMutex\nvar cache = struct {\n    mu   sync.RWMutex\n    data map[string]string\n}{data: make(map[string]string)}\n\nfunc Get(key string) string {\n    cache.mu.RLock()\n    defer cache.mu.RUnlock()\n    return cache.data[key]\n}\n\nfunc Set(key, value string) {\n    cache.mu.Lock()\n    defer cache.mu.Unlock()\n    cache.data[key] = value\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "7ac408d7-ce5a-456d-80cf-12a4c1a93c85",
+                  "title": "4.2 性能优化实践",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "6333600a-0d9e-4f36-8b3c-051f28249c1f",
+                        "title": "4.2.2 Channel优化",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "d8d63744-87d1-4ff0-a41d-7a1cf4a3a6ea",
+                              "title": "合理设置缓冲区大小",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "5f17642e-4316-4957-89d3-08f6f94abb0d",
+                              "title": "无缓冲channel：适合同步通信，严格顺序",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "e73318d4-a446-4cca-96ac-3468ac3b5bee",
+                              "title": "有缓冲channel：适合异步通信，减少阻塞",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8d730d06-496a-41f9-8073-fd4cd9819b60",
+                              "title": "缓冲区大小：根据生产者-消费者速度差异设置",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "356f748b-ff7b-4fef-88b2-515af07619cc",
+                              "title": "避免channel泄漏",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "accc5457-a5c6-4db6-ae76-56f4505a0638",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "3395c26e-b530-4a2a-a44b-ca27a358cd39",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "5610b7ec-186a-4c5f-9c32-db40c303f928",
+                                          "title": "```go\n// 坏：可能泄漏\nfunc badWorker() {\n    ch := make(chan int)\n    go func() {\n        for i := 0; i < 10; i++ {\n            ch <- i\n        }\n    }()\n    \n    for v := range ch {\n        fmt.Println(v)\n    }\n    // ch未关闭，goroutine可能阻塞\n}\n\n// 好：确保关闭\nfunc goodWorker() {\n    ch := make(chan int)\n    go func() {\n        defer close(ch) // 确保关闭\n        for i := 0; i < 10; i++ {\n            ch <- i\n        }\n    }()\n    \n    for v := range ch {\n        fmt.Println(v)\n    }\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "0b3311db-eefa-461f-a952-c626a715e1a2",
+                        "title": "4.2.3 内存优化",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "f232154e-2dfb-48ed-8879-89e37c18d1bf",
+                              "title": "使用sync.Pool复用对象",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "a070f8fc-afcb-4c76-9a45-85e911fc5930",
+                                    "title": "```go\nvar bufferPool = sync.Pool{\n    New: func() interface{} {\n        return make([]byte, 4096)\n    },\n}\n\nfunc processRequest(conn net.Conn) {\n    buf := bufferPool.Get().([]byte)\n    defer func() {\n        // 重置buffer防止数据泄露（重要！）\n        clear(buf) // Go 1.21+，或用 for i := range buf { buf[i] = 0 }\n        bufferPool.Put(buf)\n    }()\n    n, err := conn.Read(buf)\n    if err != nil {\n        return\n    }\n    // 处理 buf[:n]\n    _ = n\n}\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "f8b3bc6f-c3c9-42c6-8fc4-bc62662e6f54",
+                        "title": "4.2.4 避免闭包捕获",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "ea750c82-d803-453a-b294-04e3297eaf9d",
+                              "title": "📌 **闭包捕获（Closure Capture）**：闭包\"捕获\"的是变量的**地址**，不是值。等goroutine执行时，变量可能已经变了。",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "d2958f45-fc58-420e-afb6-cbc779b4d26f",
+                              "title": "快递单上写的是\"i的地址\"，不是\"i的值\"",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8a1e3418-82b9-4704-98ed-18e7ba6727fd",
+                              "title": "等送货时去看地址里的内容，值已经变了",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "3166ab91-505d-47c8-a959-b211d244f026",
+                                    "title": "```go\n// 错误示例（Go 1.21及以前版本）\nfor i := 1; i <= 3; i++ {\n    go func() {\n        fmt.Println(\"处理订单\", i) // 可能全打印4！\n    }()\n}\n\n// 正确做法：传参复制值\nfor i := 1; i <= 3; i++ {\n    go func(orderID int) {  // 参数传值，复制一份\n        fmt.Println(\"处理订单\", orderID)\n    }(i)\n}\n```",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "0f9e0e44-28c5-4456-8c73-d101542b94f2",
+                                    "title": "📌 注：Go 1.22+ 已修复此问题，每次循环迭代创建新变量",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "6c92504b-a4b3-4c46-a36a-066231c8cb00",
+                  "title": "4.3 并发模式选择",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "229894a5-2614-4bc4-b6c0-e1d47e381815",
+                        "title": "CPU密集 vs IO密集",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "b58c7311-d907-4449-852b-8ea0b121ee5d",
+                              "title": "📌 **CPU密集型（CPU-bound）**：任务一直在计算，CPU是瓶颈",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "3e96c060-b379-4429-8cf2-edf716917c57",
+                              "title": "📌 **IO密集型（IO-bound）**：任务大部分时间在等待，IO是瓶颈",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "49ba9e91-2199-4283-aa58-f5cf2de6b9bf",
+                              "title": "类型: **CPU密集** | 比喻: 仓库分拣员打包 | 特点: 一直干活，不等人 | goroutine数量建议: ≈ CPU核心数",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "377cdea2-98ac-4024-93e1-8ee0a5a994bc",
+                              "title": "类型: **IO密集** | 比喻: 快递员等电梯 | 特点: 大部分时间在等待 | goroutine数量建议: 可以开很多（几千个）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "d249b164-10d3-405d-b554-d4bda17879a4",
+                              "title": "问自己：**代码大部分时间在干什么？**",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "68cafa26-64ca-4563-a3e9-b035bcd8dd04",
+                              "title": "看什么: 有没有网络调用 | CPU密集特征: 没有 http.Get、grpc | IO密集特征: 有 http、grpc、tcp",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8cee6011-e377-4cc1-88fa-aca6a367b0d3",
+                              "title": "看什么: 有没有数据库操作 | CPU密集特征: 没有 db.Query | IO密集特征: 有 SQL查询",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1daf54f8-5b7f-4574-a283-47eb79a93a61",
+                              "title": "看什么: 有没有文件读写 | CPU密集特征: 没有 os.ReadFile | IO密集特征: 有文件操作",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "746d75b3-f0b9-4d38-adec-6671f96812a6",
+                              "title": "看什么: 有没有sleep/等待 | CPU密集特征: 没有 time.Sleep | IO密集特征: 有等待操作",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "95aafd10-b38f-40b7-8cb0-1f8dc51eb5c3",
+                              "title": "看什么: CPU占用 | CPU密集特征: 100%跑满 | IO密集特征: 通常很低",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "97c0e7c1-97f4-4206-a7c5-5712a155f02b",
+                              "title": "类型: **CPU密集** | 典型操作: 循环计算、加密解密、压缩、正则匹配 | 电商场景: 生成缩略图、计算优惠价、密码哈希",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "330916d3-59eb-4fdf-b727-b20912603b52",
+                              "title": "类型: **IO密集** | 典型操作: 网络请求、数据库查询、文件读写 | 电商场景: 调用支付API、查库存、发短信",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "9e366b7a-92ad-4846-9abc-8ea519aeb686",
+                              "title": "```go\n// ========== CPU密集型 ==========\n// 特征：没有网络/文件/数据库操作，纯计算\n\nfunc 压缩图片(img []byte) []byte {\n    for i := range img {\n        img[i] = 复杂算法处理(img[i])  // 一直在算\n    }\n    return img\n}\n\nfunc 计算优惠价格(order Order) float64 {\n    // 复杂的满减、折扣、积分抵扣计算\n    return 最终价格\n}\n\n// ========== IO密集型 ==========\n// 特征：大部分时间在等网络/数据库/文件响应\n\nfunc 查询物流(orderID string) Status {\n    resp, _ := http.Get(\"https://api.kuaidi.com/\" + orderID)  // 等网络\n    return 解析(resp)\n}\n\nfunc 查库存(productID int) int {\n    row := db.QueryRow(\"SELECT stock FROM products WHERE id=?\", productID)  // 等数据库\n    return stock\n}\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "86fa61b7-796c-4091-97fa-828b3664d26b",
+                              "title": "```go\n// CPU密集：goroutine数 ≈ CPU核心数\n// 开多了没用，CPU就那么多，反而增加切换开销\nworkers := runtime.NumCPU()  // 8核就开8个\n\n// IO密集：可以开很多\n// 反正大部分时间在等，多开几个能同时等更多请求\nfor i := 0; i < 1000; i++ {\n    go 调用外部API()  // 开1000个都行\n}\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "05e7e724-f866-4b93-b608-5cce0675d83f",
+                              "title": "实际往往是混合的，按瓶颈分析：",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1a74c77c-c40a-4afb-b3b6-6cd7411e3760",
+                              "title": "```go\nfunc 处理订单(order Order) {\n    库存 := 查库存(order.ProductID)    // IO密集：等数据库\n    价格 := 计算优惠价格(order, 库存)    // CPU密集：计算\n    调用支付API(order, 价格)           // IO密集：等网络\n    生成电子发票PDF(order)             // CPU密集：生成PDF\n}\n// 大部分时间花在IO → 当IO密集处理\n// 如果计算部分特别重 → 把CPU密集部分拆出来用Worker Pool\n```",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "1ddd1de5-ffba-4741-9856-8d0be8c531c2",
+                        "title": "Worker Pool模式 —— 工作池",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "d20b8427-2bfe-4e78-a21e-238558adf31a",
+                              "title": "固定5个分拣员（worker）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "964fd09e-f022-4f2d-b09d-094cde3838b8",
+                              "title": "订单（job）放进队列",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "356945b9-ec83-4e29-842c-84cc1e51b031",
+                              "title": "分拣员从队列取订单处理",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "ee628884-e672-406f-9aab-455aad0ff28d",
+                              "title": "不会因为1000个订单就招1000个人",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "e04b3819-8fa4-4c4c-89f4-90624f4023a6",
+                                    "title": "```go\nfunc main() {\n    jobs := make(chan Order, 100)    // 订单队列\n    results := make(chan Result, 100) // 结果队列\n\n    // 启动5个分拣员（固定数量）\n    for w := 1; w <= 5; w++ {\n        go 分拣员(w, jobs, results)\n    }\n\n    // 投递1000个订单\n    for i := 1; i <= 1000; i++ {\n        jobs <- Order{ID: i}\n    }\n    close(jobs)\n}\n\nfunc 分拣员(id int, jobs <-chan Order, results chan<- Result) {\n    for order := range jobs {\n        results <- 打包(order)\n    }\n}\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "ef6d4127-f7c3-4640-af6d-6b9ea06fc8c5",
+                        "title": "Pipeline模式 —— 流水线",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "e39d81f8-b556-4b1d-adf1-e7085be6f488",
+                              "title": "```\n原料 → 切割 → 组装 → 包装 → 成品\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "49926dc7-6ded-46ca-9a59-956a3ee9d035",
+                              "title": "每个环节只做一件事，做完传给下一个",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "f0979dee-6e86-4c07-8540-95b78bfb6bd2",
+                              "title": "```go\n// 阶段1：生成订单\nfunc 接单() <-chan Order {\n    out := make(chan Order)\n    go func() {\n        for i := 1; i <= 10; i++ {\n            out <- Order{ID: i}\n        }\n        close(out)\n    }()\n    return out\n}\n\n// 阶段2：计算价格\nfunc 算价(in <-chan Order) <-chan Order {\n    out := make(chan Order)\n    go func() {\n        for order := range in {\n            order.Price = 计算(order)\n            out <- order\n        }\n        close(out)\n    }()\n    return out\n}\n\n// 串起来：接单 → 算价 → 发货\norders := 接单()\npriced := 算价(orders)\n```",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "fcfb7acd-b607-4f30-aeb7-f9c0cb34e66e",
+                        "title": "Fan-out/Fan-in模式 —— 扇出/扇入",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "cce77611-03ac-4c52-a81d-beb12dbd4b0d",
+                              "title": "1000个订单，分给10个仓库同时处理",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "ff5030a2-86f5-45bb-9f8a-e17b91d99208",
+                              "title": "一个输入，多个处理者",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "a057b2f5-ae39-4318-ac9e-c2e875e6d2bf",
+                              "title": "10个仓库的发货结果，汇总到一个报表",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1be8c392-7248-481d-b7d2-47df3a5dc375",
+                              "title": "多个输入，合并成一个输出",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "da48b8dc-fee2-4c8a-9cfe-3e8d565633dd",
+                                    "title": "```\n        ┌→ 仓库1 ─┐\n订单队列 ─┼→ 仓库2 ─┼→ 汇总报表\n        └→ 仓库3 ─┘\n     (Fan-out)  (Fan-in)\n```",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "cec157b6-fcfe-407d-8145-839dafff83a3",
+                                    "title": "```go\n// Fan-out：多个worker抢同一个channel\njobs := make(chan Order, 100)\nfor i := 0; i < 10; i++ {\n    go 仓库处理(jobs, results)  // 10个仓库抢着处理\n}\n\n// Fan-in：多个channel合并成一个\nfunc 汇总(channels ...<-chan Result) <-chan Result {\n    out := make(chan Result)\n    var wg sync.WaitGroup\n    for _, ch := range channels {\n        wg.Add(1)\n        go func(c <-chan Result) {\n            defer wg.Done()\n            for r := range c {\n                out <- r\n            }\n        }(ch)\n    }\n    go func() { wg.Wait(); close(out) }()\n    return out\n}\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "3c4475a2-c45c-49da-a3e9-41d9ef75a666",
+                        "title": "并发模式选择矩阵",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "e99f85a0-417c-490c-bbdf-74cd867cdfa1",
+                              "title": "场景: 控制并发数 | 模式: Worker Pool | 电商比喻: 固定5个分拣员",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "a509e5b4-0f94-4954-b6a2-cb8d97dbd62e",
+                              "title": "场景: 多步骤处理 | 模式: Pipeline | 电商比喻: 生产流水线",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8e82f84c-ef3d-4aba-8b11-0e7fd7a2ae72",
+                              "title": "场景: 并行处理后汇总 | 模式: Fan-out/Fan-in | 电商比喻: 分单到多仓库，汇总报表",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "a3aeb57e-ac3f-4a73-bc3d-773ea7ae20d0",
+                              "title": "场景: CPU密集任务 | 模式: Worker Pool | 电商比喻: goroutine数≈CPU核心",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "9589ab9c-ab15-476c-bf31-0ecef21506b5",
+                              "title": "场景: IO密集任务 | 模式: 直接开goroutine | 电商比喻: 可以开很多",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "ca67fd1d-2147-431e-9c4c-a69059afeed4",
+            "title": "第五部分：死锁问题及解决方案",
+            "titleUnedited": false,
+            "children": {
+              "attached": [
+                {
+                  "id": "5f26671e-10ca-49cc-b6cc-a4f8034f28de",
+                  "title": "5.1 死锁的四个必要条件",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "95ca38f0-c1ba-4429-bbcf-7d221a9320f8",
+                        "title": "互斥条件（Mutual Exclusion）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "3a0edccb-d4c9-4d5a-b52a-0761bae9ad57",
+                              "title": "资源不能同时被多个goroutine使用",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "16159ffb-6b2a-43bf-aaba-d8b5bb044d54",
+                              "title": "Go中：锁、channel等资源都是互斥的",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "1aaa67ca-10eb-40b6-83d0-c6abdf719be3",
+                        "title": "不可剥夺条件（No Preemption）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "c928489b-d88d-45bd-b03f-e026144fe6e2",
+                              "title": "资源只能由持有者主动释放",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "e5e0ca36-3824-413c-a284-5a1406b93a9d",
+                              "title": "Go中：锁必须由加锁的goroutine解锁，channel中的数据只能通过接收操作取出",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "aa91305b-e87a-40cf-89fb-134fde90cea2",
+                        "title": "请求与保持条件（Hold and Wait）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "512a18ea-0d90-4649-99c6-3e19514f6b1e",
+                              "title": "持有至少一个资源，同时请求其他资源",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "d8261d28-7cc0-454e-81c4-134b5b0ee276",
+                              "title": "Go中：持有锁A的同时请求锁B",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "fe630934-76aa-4e1d-af50-934f3e454a50",
+                        "title": "循环等待条件（Circular Wait）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "586df390-74e6-4e4c-9137-c08dc42233b4",
+                              "title": "存在一个goroutine等待环",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1e19ce54-d241-4486-bc92-6e058ac46d5a",
+                              "title": "Go中：goroutine1持有锁A等待锁B，goroutine2持有锁B等待锁A",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "f95c5161-43e7-449b-9626-5fa8d381792a",
+                  "title": "5.2 Go中的死锁场景",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "deed4d4f-f2b3-47fe-ac2d-c0a50b259b86",
+                        "title": "5.2.1 Channel死锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "9278dd04-a404-43ac-8065-58dc1291e42a",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "39ee22ff-3773-404e-9557-2cfac6acbeb6",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "98ba1932-c4f2-4bfe-9bd5-40d302754d93",
+                                          "title": "```go\n// 无缓冲channel死锁：主goroutine发送，无人接收\nfunc channelDeadlock1() {\n    ch := make(chan int)\n    ch <- 1 // 主goroutine阻塞，无其他goroutine接收\n    // fatal error: all goroutines are asleep - deadlock!\n}\n\n// 无缓冲channel死锁：有发送者，无接收者\nfunc channelDeadlock2() {\n    ch := make(chan int)\n    go func() {\n        ch <- 42 // goroutine尝试发送，阻塞等待接收者\n    }()\n    ch <- 1 // 主goroutine也发送，两个发送者都阻塞，无人接收\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "48a0a0b5-96d4-4a9e-b669-77188a77b000",
+                        "title": "5.2.2 Mutex死锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "aa422908-a655-49ea-9e7e-f9c0ef257a64",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "935b424a-96f8-4972-a6da-5782856ba97b",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "a643854c-0b77-40d7-a27a-e517118c82e3",
+                                          "title": "```go\n// 交叉锁死锁\nfunc mutexDeadlock() {\n    var mu1, mu2 sync.Mutex\n    \n    go func() {\n        mu1.Lock()\n        defer mu1.Unlock()\n        \n        time.Sleep(100 * time.Millisecond)\n        \n        mu2.Lock() // 等待mu2\n        defer mu2.Unlock()\n    }()\n    \n    mu2.Lock()\n    defer mu2.Unlock()\n    \n    time.Sleep(50 * time.Millisecond)\n    \n    mu1.Lock() // 等待mu1，死锁\n    defer mu1.Unlock()\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "921024e3-4a2e-4f30-8b15-02157c8a7ab3",
+                        "title": "5.2.3 WaitGroup误用（panic与死锁）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "bdf47cdc-daa8-486b-b74e-1251e3cfe376",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "e1e72241-b3a3-4725-9dc5-fdb09b4274e5",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "be45dab8-69a1-4dfb-8f75-50bd22d60c8f",
+                                          "title": "```go\n// WaitGroup计数错误导致panic\nfunc wgPanic() {\n    var wg sync.WaitGroup\n    wg.Add(1)\n    go func() { wg.Done() }()\n    go func() { wg.Done() }() // panic: negative WaitGroup counter\n    wg.Wait()\n}\n\n// WaitGroup真正的死锁\nfunc wgDeadlock() {\n    var wg sync.WaitGroup\n    wg.Add(1)\n    wg.Wait() // 没有goroutine调用Done()，永远阻塞\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "66c9d46d-cce1-4c87-81cd-1ae47311c507",
+                  "title": "5.3 Go死锁检测",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "3d909772-83f1-49c5-82e2-31d66b9a6cc2",
+                        "title": "运行时死锁检测",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "f5c6c366-5848-4d79-9b7a-b75aa4cf604e",
+                              "title": "Go运行时会自动检测死锁并panic",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "e8a61169-e117-499c-9c42-fc293f6aa16a",
+                              "title": "报错信息：`fatal error: all goroutines are asleep - deadlock!`",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "877bdd33-65e0-4bb3-9d87-026763e02a96",
+                        "title": "竞态条件检测",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "72e01b9f-6551-4047-bb8c-c5b27a2dbf42",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "909ac661-2931-472a-94ad-f36f3dbe999f",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "627d8763-0fed-4d48-a925-5420cd8ecd8a",
+                                          "title": "```bash\ngo run -race main.go\ngo test -race\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "38f6929f-2c07-4f8f-8011-a3e2142058a1",
+                  "title": "5.4 死锁解决方案",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "f4942433-c9cd-410e-94b9-3f09055f0cb4",
+                        "title": "5.4.1 预防策略",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "9ddde090-e964-41bb-a2ec-1a7cb221318a",
+                              "title": "1. 按固定顺序获取锁",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "9fa270a0-c885-48cf-99e8-1afc95e6c887",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "91e3e778-e52a-41be-a289-9e11f1eea922",
+                                          "title": "(代码块)",
+                                          "titleUnedited": false,
+                                          "children": {
+                                            "attached": [
+                                              {
+                                                "id": "960e9ea6-6e6f-46aa-a23f-2e9ead6edda2",
+                                                "title": "```go\n// 好：总是按相同顺序获取锁\nfunc safeOperation() {\n    mu1.Lock()\n    defer mu1.Unlock()\n    \n    mu2.Lock()\n    defer mu2.Unlock()\n    \n    // 操作共享资源\n}\n```",
+                                                "titleUnedited": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "1da97e8f-54f0-4919-8de3-bc6df38bab00",
+                              "title": "2. 超时机制（Go 1.18+ TryLock）",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "e2c35380-5125-4e72-a163-9c10ca3d32fa",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "c643baae-324c-4198-8583-86ba3223dab8",
+                                          "title": "(代码块)",
+                                          "titleUnedited": false,
+                                          "children": {
+                                            "attached": [
+                                              {
+                                                "id": "8b72650d-dad4-4d60-8308-732695f1cba3",
+                                                "title": "```go\n// Go 1.18+ 使用TryLock实现超时获取锁\n// 注意：这是自旋等待的简化示例，生产环境建议使用channel+context或semaphore\nfunc tryLockWithTimeout(mu *sync.Mutex, timeout time.Duration) bool {\n    deadline := time.Now().Add(timeout)\n    for time.Now().Before(deadline) {\n        if mu.TryLock() {\n            return true\n        }\n        time.Sleep(time.Millisecond) // 间隔可根据场景调整\n    }\n    return false\n}\n\n// 使用\nif tryLockWithTimeout(&mu, 100*time.Millisecond) {\n    defer mu.Unlock()\n    // 执行操作\n} else {\n    fmt.Println(\"获取锁超时\")\n}\n```",
+                                                "titleUnedited": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "e679cebc-6915-4314-8775-cbf7938cfb99",
+                              "title": "3. 使用channel限制并发",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "601ce876-95b2-4b85-bd83-66dce6c74a65",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "283c9881-6771-4a3c-ab59-40dfad770bdf",
+                                          "title": "(代码块)",
+                                          "titleUnedited": false,
+                                          "children": {
+                                            "attached": [
+                                              {
+                                                "id": "e5a9b6f7-82e9-48c1-99d9-2b4b9a707235",
+                                                "title": "```go\nfunc workerPoolWithTimeout() {\n    jobs := make(chan Job, 100)\n    results := make(chan Result, 100)\n    maxWorkers := runtime.NumCPU()\n    \n    for i := 0; i < maxWorkers; i++ {\n        go worker(jobs, results)\n    }\n    \n    // 提交任务\n    for i := 0; i < 100; i++ {\n        select {\n        case jobs <- Job{i}:\n            fmt.Printf(\"Submitted job %d\\n\", i)\n        case <-time.After(10 * time.Millisecond):\n            fmt.Printf(\"Job %d timeout, skipping\\n\", i)\n        }\n    }\n}\n```",
+                                                "titleUnedited": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "b0f7fbe3-25fc-4e4b-8175-00002628f87a",
+                        "title": "5.4.2 检测和解决",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "14a9e696-92a3-4c44-a3fa-14f2ae7d0c3c",
+                              "title": "1. pprof工具分析",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "3451c028-cfd0-462b-b5ab-1afe13ff41f2",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "28bb2f0b-b9b9-4352-9607-8e077780c27e",
+                                          "title": "(代码块)",
+                                          "titleUnedited": false,
+                                          "children": {
+                                            "attached": [
+                                              {
+                                                "id": "5f059333-3d14-45ea-8cd0-7fccf0941896",
+                                                "title": "```go\nimport _ \"net/http/pprof\"\n\n// 启动HTTP服务器\ngo func() {\n    http.ListenAndServe(\"localhost:6060\", nil)\n}()\n\n// 访问：http://localhost:6060/debug/pprof/goroutine?debug=2\n// 查看goroutine堆栈，分析死锁\n```",
+                                                "titleUnedited": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "64ad1d0b-551d-4adf-9a84-e8420e87615e",
+                              "title": "2. 死锁检测库",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "42af9101-c9e9-49cd-932c-5dbccdcc7d22",
+                                    "title": "```go\n// 推荐使用第三方库 github.com/sasha-s/go-deadlock\nimport \"github.com/sasha-s/go-deadlock\"\n\nvar mu deadlock.Mutex  // 替代 sync.Mutex，自动检测潜在死锁\n\nfunc example() {\n    mu.Lock()\n    defer mu.Unlock()\n    // 如果检测到死锁风险，会打印警告和堆栈\n}\n```",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "2282508d-a9e9-47ee-af2f-0c3e993247cb",
+                        "title": "5.4.3 恢复策略",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "4d726120-d1ab-46d1-b8f9-68b1981240a6",
+                              "title": "1. 超时取消（避免goroutine泄漏）",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "f8be0d97-2bfe-417f-a558-8a1ed5f58d43",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "064ce431-8be4-4304-b6e9-e7cfb4bbe0f7",
+                                          "title": "(代码块)",
+                                          "titleUnedited": false,
+                                          "children": {
+                                            "attached": [
+                                              {
+                                                "id": "81a16214-ebb2-4df9-b3ad-880e96ec61c9",
+                                                "title": "```go\nfunc operationWithTimeout() {\n    ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)\n    defer cancel()\n    \n    resultChan := make(chan string, 1) // 缓冲channel防止泄漏\n    go func() {\n        time.Sleep(3 * time.Second)\n        select {\n        case resultChan <- \"result\":\n        case <-ctx.Done(): // 超时则直接返回\n        }\n    }()\n    \n    select {\n    case result := <-resultChan:\n        fmt.Println(result)\n    case <-ctx.Done():\n        fmt.Println(\"Operation timed out:\", ctx.Err())\n    }\n}\n```",
+                                                "titleUnedited": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "id": "50dae1a2-52fd-451b-852f-fb60c107c761",
+                              "title": "2. 优雅降级",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "e01f78b8-d880-4cac-a88f-37233d6a039d",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "e5aeed4d-e18a-4fa5-b0ab-b4d6caca9caa",
+                                          "title": "(代码块)",
+                                          "titleUnedited": false,
+                                          "children": {
+                                            "attached": [
+                                              {
+                                                "id": "2285d15b-065f-4196-b6d8-e09a5cd45f97",
+                                                "title": "```go\nfunc gracefulDegradation() {\n    ctx, cancel := context.WithCancel(context.Background())\n    defer cancel()\n    \n    go monitorSystemHealth(ctx, func() {\n        // 系统不健康时触发降级\n        cancel()\n    })\n    \n    select {\n    case <-doImportantWork(ctx):\n        fmt.Println(\"Work completed successfully\")\n    case <-ctx.Done():\n        fmt.Println(\"System degraded, skipping non-critical work\")\n        // 执行降级逻辑\n    }\n}\n```",
+                                                "titleUnedited": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "0f419982-4d9f-42bd-bcec-388512547f74",
+                  "title": "5.5 Go特色死锁解决方案",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "99006718-784f-4289-bd6c-183753267ec2",
+                        "title": "5.5.1 使用select default避免阻塞",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "b1d6a78d-cb05-471a-a342-a3200e790841",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "612a2de8-5ad3-44f3-9764-56f1251cab47",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "1d663ccb-c51c-415c-aa1b-66ffda1f1741",
+                                          "title": "```go\n// 好：使用default避免永久阻塞\nfunc nonBlockingSelect() {\n    ch := make(chan int)\n    \n    go func() {\n        time.Sleep(100 * time.Millisecond)\n        ch <- 42\n    }()\n    \n    select {\n    case val := <-ch:\n        fmt.Println(\"Received:\", val)\n    default:\n        fmt.Println(\"No data available, continuing...\")\n    }\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "978bb979-00c9-40e7-8814-ad7044030f73",
+                        "title": "5.5.2 Context取消传播",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "1d629e97-371d-49aa-b9e0-2ce9f288a36e",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "7bb76e5f-03d8-49b9-9b40-f196b59cee99",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "ada977f7-c74e-4feb-9f39-25d867c631a8",
+                                          "title": "```go\n// 通过context传播取消信号\nfunc contextCancellation() {\n    ctx, cancel := context.WithCancel(context.Background())\n    \n    // 启动多个goroutine\n    for i := 0; i < 5; i++ {\n        go func(id int) {\n            select {\n            case <-time.After(time.Duration(id) * time.Second):\n                fmt.Printf(\"Worker %d completed\\n\", id)\n            case <-ctx.Done():\n                fmt.Printf(\"Worker %d cancelled: %v\\n\", id, ctx.Err())\n            }\n        }(i)\n    }\n    \n    // 2秒后取消所有\n    time.Sleep(2 * time.Second)\n    cancel()\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "ee87968b-d5fb-4662-9d99-9819e5097cbf",
+                        "title": "5.5.3 使用errgroup简化错误处理",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "c8fa3081-6811-45f0-a17a-60850a3a72f3",
+                              "title": "(代码块)",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "f84efb23-9e8e-4792-9873-b901ba66dd35",
+                                    "title": "(代码块)",
+                                    "titleUnedited": false,
+                                    "children": {
+                                      "attached": [
+                                        {
+                                          "id": "3cfbb5fa-c517-450f-b462-4c208120d1eb",
+                                          "title": "```go\nimport \"golang.org/x/sync/errgroup\"\n\nfunc errgroupExample() {\n    var g errgroup.Group\n    \n    // 启动多个goroutine\n    for i := 0; i < 5; i++ {\n        i := i // Go 1.21及之前需要此行避免闭包捕获问题，Go 1.22+可省略\n        g.Go(func() error {\n            if i == 3 {\n                return fmt.Errorf(\"error in worker %d\", i)\n            }\n            fmt.Printf(\"Worker %d started\\n\", i)\n            time.Sleep(time.Duration(i) * 100 * time.Millisecond)\n            fmt.Printf(\"Worker %d finished\\n\", i)\n            return nil\n        })\n    }\n    \n    // 等待所有完成或返回第一个错误\n    // 注意：需用errgroup.WithContext(ctx)创建才能自动取消其他goroutine\n    if err := g.Wait(); err != nil {\n        fmt.Printf(\"Group error: %v\\n\", err)\n    }\n}\n```",
+                                          "titleUnedited": false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "9973c18b-e56d-4eab-b812-5fd03b034085",
+            "title": "总结",
+            "titleUnedited": false,
+            "children": {
+              "attached": [
+                {
+                  "id": "97134a3d-f42f-4f16-821c-92a6fe2f2af9",
+                  "title": "Go的并发模型通过goroutine和channel提供了一种简单而强大的并发编程方式。理解操作系统层面的多线程知识有助于更好地掌握Go的并发设计。通过遵循最佳实践，避免常见的并发陷阱，可以构建出高性能、高可靠的并发系统。",
+                  "titleUnedited": false
+                },
+                {
+                  "id": "eb1c8fd4-faaf-461d-81db-ed9fae5001df",
+                  "title": "Go并发的核心哲学是：\"不要通过共享内存来通信，而应该通过通信来共享内存\"。这一原则贯穿于整个Go并发设计，使得并发编程变得更加简单和安全。",
+                  "titleUnedited": false
+                }
+              ]
+            }
+          },
+          {
+            "id": "ec5ab0a5-6ea2-49cc-a902-08815100399e",
+            "title": "附录：并发编程词汇表",
+            "titleUnedited": false,
+            "children": {
+              "attached": [
+                {
+                  "id": "3e5ad90a-9e6a-48b2-be41-4ea83e9c6d8b",
+                  "title": "基础概念",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "00e91d2a-013f-4fbf-88a4-3eaa08282269",
+                        "title": "术语: **进程** | 英文: Process | 含义: 操作系统资源分配单位 | 电商隐喻: 一家店铺 | 同义词/相关词: 任务、应用 | 反义词/对比词: 线程",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "2a3f5f72-90b7-4e6a-98d3-fcd03f333b0e",
+                        "title": "术语: **线程** | 英文: Thread | 含义: CPU调度基本单位 | 电商隐喻: 店铺里的员工 | 同义词/相关词: 执行流 | 反义词/对比词: 进程",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "2a883264-c6e2-409b-ac47-82915ea93931",
+                        "title": "术语: **协程** | 英文: Coroutine | 含义: 用户态轻量级线程 | 电商隐喻: 临时工（成本低） | 同义词/相关词: goroutine、纤程 | 反义词/对比词: 线程",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "6820b79d-cf90-4d07-803a-37495f7a8853",
+                        "title": "术语: **goroutine** | 英文: - | 含义: Go的协程实现 | 电商隐喻: 临时工 | 同义词/相关词: 协程、轻量级线程 | 反义词/对比词: OS线程",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "fcaf99e2-c3d0-43a3-822c-602c94d4290f",
+                  "title": "并发 vs 并行",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "43c0062a-f52a-487e-8f90-f5912908d697",
+                        "title": "术语: **并发** | 英文: Concurrency | 含义: 逻辑上同时处理多个任务 | 电商隐喻: 一个客服切换处理多个客户 | 同义词: 多任务 | 反义词: 串行",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "256b6b3c-5d3a-445c-b929-018936861c40",
+                        "title": "术语: **并行** | 英文: Parallelism | 含义: 物理上同时执行多个任务 | 电商隐喻: 多个客服同时服务 | 同义词: 同时执行 | 反义词: 串行",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "9f3a89c1-39c4-499c-916a-1d780c6e07f5",
+                        "title": "术语: **串行** | 英文: Serial | 含义: 一个接一个执行 | 电商隐喻: 排队一个个处理 | 同义词: 顺序执行 | 反义词: 并发、并行",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "4e1fd69b-4c4f-4887-b608-93ca82325ed2",
+                  "title": "同步与通信",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "e8ea74fd-ece2-48ff-be0b-0674e4125ca8",
+                        "title": "术语: **同步** | 英文: Synchronous | 含义: 等待结果返回才继续 | 电商隐喻: 柜台结账，站着等 | 同义词: 阻塞式 | 反义词: 异步",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "90ce7987-422f-4a82-9dca-6457edfc9a99",
+                        "title": "术语: **异步** | 英文: Asynchronous | 含义: 不等结果，继续执行 | 电商隐喻: 取号等餐，拿号就走 | 同义词: 非阻塞式 | 反义词: 同步",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "02991cac-7f69-4c30-8727-1b289776a737",
+                        "title": "术语: **阻塞** | 英文: Blocking | 含义: 等待时什么都不能做 | 电商隐喻: 排队时干站着 | 同义词: 挂起、等待 | 反义词: 非阻塞",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "7e053a14-dcca-42de-a1b7-3ede28b7619d",
+                        "title": "术语: **非阻塞** | 英文: Non-blocking | 含义: 等待时可以做别的事 | 电商隐喻: 等餐时可以逛街 | 同义词: 轮询、异步 | 反义词: 阻塞",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "07a2e880-e89f-4de5-9018-7ffe5f8261c3",
+                  "title": "Channel相关",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "b1745d9f-c56a-4f4b-8c0b-0baa57fbb2e5",
+                        "title": "术语: **无缓冲channel** | 英文: Unbuffered | 含义: 发送接收必须同时就绪 | 电商隐喻: 一对一客服 | 同义词: 同步channel | 反义词: 有缓冲channel",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "31771e73-9b5f-4f4f-97ae-dabf4dea45a7",
+                        "title": "术语: **有缓冲channel** | 英文: Buffered | 含义: 有队列暂存数据 | 电商隐喻: 快递柜 | 同义词: 异步channel | 反义词: 无缓冲channel",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "3add8b8c-2066-4b9f-86f1-a43195cc2154",
+                        "title": "术语: **只发送channel** | 英文: Send-only | 含义: 只能发送的channel | 电商隐喻: 订单投递口 | 同义词: chan<- | 反义词: 只接收channel",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "62e00828-4f27-43d3-8ee4-4d3646ddf9a3",
+                        "title": "术语: **只接收channel** | 英文: Receive-only | 含义: 只能接收的channel | 电商隐喻: 仓库取单窗口 | 同义词: <-chan | 反义词: 只发送channel",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "4317817a-bc65-4832-93b6-2ecab425cde6",
+                  "title": "锁与同步原语",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "cb55fde6-50de-412a-ba15-a9564467852f",
+                        "title": "术语: **互斥锁** | 英文: Mutex | 含义: 同一时间只有一个能访问 | 电商隐喻: 试衣间 | 同义词: 排他锁、独占锁 | 反义词: 读写锁",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "0e23dd35-60af-40db-b9b2-a3571ef88c0e",
+                        "title": "术语: **读写锁** | 英文: RWMutex | 含义: 读共享，写独占 | 电商隐喻: 商品详情页 | 同义词: 读写互斥锁 | 反义词: 纯互斥锁",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "c042072b-04af-441d-a2ae-bfb55e7e6942",
+                        "title": "术语: **死锁** | 英文: Deadlock | 含义: 互相等待，永远阻塞 | 电商隐喻: A等B开门，B等A开门 | 同义词: 互锁 | 反义词: 活锁",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "b693f6a7-d1bf-4bda-9d15-4574222c444e",
+                        "title": "术语: **活锁** | 英文: Livelock | 含义: 不断重试，无法进展 | 电商隐喻: 两人互相让路 | 同义词: - | 反义词: 死锁",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "34a3afbb-82ac-4b51-adbd-6e814cf3a2cb",
+                        "title": "术语: **饥饿** | 英文: Starvation | 含义: 长期无法获得资源 | 电商隐喻: 一直被插队 | 同义词: - | 反义词: 公平调度",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "dad25720-d02d-452c-912b-2feaa9ffe46c",
+                  "title": "内存模型",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "dd898dda-62f3-415c-8794-5640ad2e0dee",
+                        "title": "术语: **happens-before** | 英文: - | 含义: A的结果对B可见的保证 | 电商隐喻: 发货签收顺序 | 同义词: 先行发生 | 反义词: -",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "6a29f303-9bc8-4912-a583-8917ed577d41",
+                        "title": "术语: **可见性** | 英文: Visibility | 含义: 一个线程的修改对其他线程可见 | 电商隐喻: 仓库改价格，前台能看到 | 同义词: - | 反义词: 缓存不一致",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "10612d9b-f9d8-470e-92c8-abbfcc7adca7",
+                        "title": "术语: **原子性** | 英文: Atomicity | 含义: 操作不可分割 | 电商隐喻: 扣款不能中途打断 | 同义词: 不可中断 | 反义词: 非原子操作",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "9dca5b87-f1b8-4917-834c-b4fb9db63629",
+                        "title": "术语: **有序性** | 英文: Ordering | 含义: 指令按预期顺序执行 | 电商隐喻: 先扣库存再扣款 | 同义词: 顺序性 | 反义词: 指令重排序",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "462723b9-ac73-4bbc-9ed2-5a69551ca991",
+                  "title": "并发模式",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "61c2f687-2c5b-4a5c-9d9d-7f1153f75d70",
+                        "title": "术语: **Worker Pool** | 英文: 工作池 | 含义: 固定数量worker处理任务 | 电商隐喻: 仓库5个分拣员 | 同义词: 线程池、协程池 | 反义词: 无限并发",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "8ab0af9e-1501-4f6c-89a1-7221042590f5",
+                        "title": "术语: **Pipeline** | 英文: 流水线 | 含义: 多阶段串行处理 | 电商隐喻: 生产流水线 | 同义词: 管道模式 | 反义词: 批处理",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "aac0beef-7e3f-441e-9302-df2c21fa3d4b",
+                        "title": "术语: **Fan-out** | 英文: 扇出 | 含义: 一个输入分发给多个处理者 | 电商隐喻: 分单给多仓库 | 同义词: 分发、广播 | 反义词: Fan-in",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "8d93bbc7-2525-41a6-9b54-05bcbd505448",
+                        "title": "术语: **Fan-in** | 英文: 扇入 | 含义: 多个输入合并成一个输出 | 电商隐喻: 多仓库汇总报表 | 同义词: 汇聚、合并 | 反义词: Fan-out",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "a81241fa-0faa-4f1a-a919-5e61b8a3ad16",
+                  "title": "任务类型",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "cd9fa520-86cc-4167-9690-c89f5de94f8c",
+                        "title": "术语: **CPU密集型** | 英文: CPU-bound | 含义: 任务一直在计算 | 电商隐喻: 分拣员打包 | 同义词: 计算密集型 | 反义词: IO密集型",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "092d0fa8-3166-4d99-8e64-4a02261e407b",
+                        "title": "术语: **IO密集型** | 英文: IO-bound | 含义: 任务大部分时间在等待IO | 电商隐喻: 快递员等电梯 | 同义词: 等待密集型 | 反义词: CPU密集型",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "7426db2a-0db0-4751-9906-e894020f04ae",
+                  "title": "其他重要概念",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "274100e7-dc1f-41a1-b553-2cfa58bb49de",
+                        "title": "术语: **闭包捕获** | 英文: Closure Capture | 含义: 闭包引用外部变量的地址 | 电商隐喻: 快递单写地址不写内容 | 同义词: 变量捕获 | 反义词: 值传递",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "23892195-fef3-459d-9195-c34cfa45cf1c",
+                        "title": "术语: **竞态条件** | 英文: Race Condition | 含义: 多线程访问共享资源结果不确定 | 电商隐喻: 两人同时抢最后一件商品 | 同义词: 数据竞争 | 反义词: 线程安全",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "6da32c68-a8ee-4e88-b3a7-d331ee02dcb1",
+                        "title": "术语: **背压** | 英文: Backpressure | 含义: 下游告诉上游\"慢点\" | 电商隐喻: 仓库满了，暂停收单 | 同义词: 流量控制 | 反义词: 无限缓冲",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "3ca59648-b9f2-4984-ae88-5f188b5b39b4",
+                        "title": "术语: **context** | 英文: 上下文 | 含义: 传递取消信号和超时 | 电商隐喻: 外卖配送超时机制 | 同义词: 取消令牌 | 反义词: -",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "2dbdf629-0be3-41f8-95b5-793943a6680a",
+                        "title": "术语: **CSP** | 英文: Communicating Sequential Processes | 含义: 通过消息传递进行通信的并发模型 | 电商隐喻: 用传递代替共享 | 同义词: 消息传递 | 反义词: 共享内存",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "16a22a32-d223-4ad0-8d8f-f31390e0cbce",
+                  "title": "缩写对照",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "ff476698-84dd-44a5-9f02-fdd602e1b99b",
+                        "title": "缩写: **GMP** | 全称: Goroutine-Machine-Processor | 含义: Go调度器模型",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "c346f8b2-92c9-43c1-979a-480cd67ac4cd",
+                        "title": "缩写: **CSP** | 全称: Communicating Sequential Processes | 含义: 通信顺序进程",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "719a75cc-e976-45fe-ae88-cbe571f1de4e",
+                        "title": "缩写: **CAS** | 全称: Compare-And-Swap | 含义: 原子操作：比较并交换",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "446b926a-59eb-44a7-a041-3fc83610b742",
+                        "title": "缩写: **MESI** | 全称: Modified-Exclusive-Shared-Invalid | 含义: CPU缓存一致性协议",
+                        "titleUnedited": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "ff826115-66c3-4f3b-87c0-92c36fb3d08d",
+                  "title": "Java 锁概念与 Go 对照",
+                  "titleUnedited": false,
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "ddeba773-9ce9-4e78-a52c-0d60fb404bee",
+                        "title": "📌 本节对比 Java 的锁机制与 Go 的实现差异，帮助有 Java 背景的开发者快速理解 Go 并发。",
+                        "titleUnedited": false
+                      },
+                      {
+                        "id": "9b781e46-7373-4cdc-bacd-79e09a0fbf01",
+                        "title": "概念对照总表",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "ce2336a2-35d5-43e2-8b42-c8ebf868b47f",
+                              "title": "Java 概念: 重量级锁/轻量级锁 | Go 对应: ❌ 无 | 说明: Go 没有锁升级机制",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "4ba66e51-44fd-4d21-b358-12412915a6e3",
+                              "title": "Java 概念: 乐观锁 | Go 对应: ✅ `sync/atomic` | 说明: CAS 操作",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "66006fd7-3675-4c56-b288-ee9e7bd576bd",
+                              "title": "Java 概念: 悲观锁 | Go 对应: ✅ `sync.Mutex` | 说明: 直接阻塞",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "410abb44-e6b5-4678-8c56-93b96ac55dc5",
+                              "title": "Java 概念: 排他锁 | Go 对应: ✅ `sync.Mutex` / `RWMutex.Lock()` | 说明: 独占",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "a0cfd891-a47c-400b-9df5-171e0a7f16ef",
+                              "title": "Java 概念: 共享锁 | Go 对应: ✅ `sync.RWMutex.RLock()` | 说明: 读共享",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "4f32881d-c083-4dab-9239-f1c3eff1ab9a",
+                              "title": "Java 概念: 公平锁 | Go 对应: ⚠️ 部分 | 说明: Mutex 饥饿模式（自动）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2055c657-8cca-427d-bfdf-7e72c2802477",
+                              "title": "Java 概念: 非公平锁 | Go 对应: ⚠️ 部分 | 说明: Mutex 正常模式（自动）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "b9b7213b-10e6-4baf-ab61-48cad23eb940",
+                              "title": "Java 概念: 可重入锁 | Go 对应: ❌ **不支持** | 说明: 同goroutine重复Lock会死锁！",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "224a35f1-49fd-4237-bd26-e10b5818ca1c",
+                              "title": "Java 概念: synchronized锁升级 | Go 对应: ❌ 无 | 说明: Go 无此优化",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "a2c3e26d-8f99-4afc-947b-1d88e7658fbd",
+                              "title": "Java 概念: 锁粗化 | Go 对应: ❌ 无 | 说明: Go 无 JIT，需手动优化",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "4dc45edf-e9d3-4fef-a49b-d989699fd1cc",
+                        "title": "1. 重量级锁 vs 轻量级锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "2af68aa1-1c21-4c58-9b07-3fb8ba9944f5",
+                              "title": "```\n无锁 → 偏向锁 → 轻量级锁 → 重量级锁\n       ↑          ↑           ↑\n    无竞争     CAS失败     自旋失败\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1cdd2977-b07c-47c6-8d9b-24ff5029a480",
+                              "title": "Go 没有锁升级机制",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "11ae8cb5-7311-40a5-8931-e8f25cefa464",
+                              "title": "Mutex 只有两种模式：正常模式 ⟷ 饥饿模式",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "3ecff364-62ce-45cd-a145-6cbacf00e7fe",
+                              "title": "正常模式：先自旋几次，失败后阻塞",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "d402bd65-802f-42bc-b7e0-c571ff393bf2",
+                              "title": "饥饿模式：直接排队，防止goroutine饿死",
+                              "titleUnedited": false,
+                              "children": {
+                                "attached": [
+                                  {
+                                    "id": "81a84ee4-2b25-4d62-9a58-46f994aba425",
+                                    "title": "```go\n// Go 的替代方案：根据场景选择不同工具\natomic.AddInt32(&counter, 1)  // 无锁，类似\"轻量级\"\nmu.Lock()                      // 有锁，类似\"重量级\"\n```",
+                                    "titleUnedited": false
+                                  },
+                                  {
+                                    "id": "6d49e171-f021-459d-86ea-8779ea50c5af",
+                                    "title": "📌 **Go 设计哲学**：简单直接，不搞隐式优化。想要轻量级？用 atomic。想要互斥？用 Mutex。",
+                                    "titleUnedited": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "dd230b71-79c3-47ec-9991-0ed6969c37ec",
+                        "title": "2. 乐观锁 vs 悲观锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "0b60cf95-f042-4ed7-9bb5-1c7ead5b5e30",
+                              "title": "类型: 悲观锁 | Java: `synchronized` / `ReentrantLock` | Go: `sync.Mutex`",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "88d989ce-2dea-44db-9434-2ef43f8b9dab",
+                              "title": "类型: 乐观锁 | Java: `AtomicInteger` / `StampedLock` | Go: `sync/atomic`",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "6d2450ef-ef57-4186-8219-94cf7aebd702",
+                              "title": "```go\n// 悲观锁\nmu.Lock()\ncounter++\nmu.Unlock()\n\n// 乐观锁（CAS）\natomic.AddInt32(&counter, 1)\n\n// 手动 CAS 循环\nfor {\n    old := atomic.LoadInt32(&counter)\n    if atomic.CompareAndSwapInt32(&counter, old, old+1) {\n        break\n    }\n}\n```",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "18ac5592-9946-48f8-ac93-4a9727dc3dc0",
+                        "title": "3. 公平锁 vs 非公平锁",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "705e76f9-6f56-4c9f-8a4a-650eb02475e4",
+                              "title": "```java\nReentrantLock fairLock = new ReentrantLock(true);   // 公平\nReentrantLock unfairLock = new ReentrantLock(false); // 非公平\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2df94842-31d6-42c7-8eda-5fea38ca10ed",
+                              "title": "**正常模式（类似非公平）**：新来的goroutine可能抢到锁，性能好",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "76c6ee7f-226c-4edc-9ac0-9c24d8e7a559",
+                              "title": "**饥饿模式（类似公平）**：等待超过1ms自动切换，锁直接交给队首",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "86a0cb45-e2cd-4a98-8069-622a795d0b8b",
+                        "title": "4. 可重入锁（重要区别！）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "9afa7cff-792e-4de6-bcbb-5330eb5a0505",
+                              "title": "```java\nsynchronized void outer() {\n    inner();  // ✅ 同一线程可重入\n}\nsynchronized void inner() { }\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8496f7bb-bebd-4d5a-abae-c356a1a4bc00",
+                              "title": "```go\nvar mu sync.Mutex\n\nfunc outer() {\n    mu.Lock()\n    defer mu.Unlock()\n    inner()  // 💀 死锁！\n}\n\nfunc inner() {\n    mu.Lock()  // 永远阻塞\n    defer mu.Unlock()\n}\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1d359cff-ee43-4325-bd66-3d534f19f35a",
+                              "title": "```go\n// 方案1：重构代码，内部函数不加锁\nfunc outer() {\n    mu.Lock()\n    defer mu.Unlock()\n    innerLocked()  // 约定：调用者已持有锁\n}\n\nfunc innerLocked() {\n    // 不加锁，假设调用者已持有\n}\n\n// 方案2：拆分锁的粒度\n// 方案3：使用 channel 替代锁\n```",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "b034eea2-7a33-4bb4-b7d0-c3dc3bcdda4c",
+                        "title": "5. 锁粗化（Lock Coarsening）",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "b94be320-ea96-4a9e-aed6-d268dd27be69",
+                              "title": "```java\n// JIT 会自动把循环内的锁提到循环外\nfor (int i = 0; i < 100; i++) {\n    synchronized (obj) { list.add(i); }\n}\n// 优化为 ↓\nsynchronized (obj) {\n    for (int i = 0; i < 100; i++) { list.add(i); }\n}\n```",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "dfdeb0e8-d261-4a9a-833f-cd372bd8dd5a",
+                              "title": "```go\n// 坏：频繁加锁解锁\nfor i := 0; i < 100; i++ {\n    mu.Lock()\n    list = append(list, i)\n    mu.Unlock()\n}\n\n// 好：手动粗化\nmu.Lock()\nfor i := 0; i < 100; i++ {\n    list = append(list, i)\n}\nmu.Unlock()\n```",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "3bb5477f-10d9-4eb4-99e7-6c014d6c34d0",
+                        "title": "6. Go 没有的 Java 特性",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "14dc31e4-bc12-4da4-bca4-9bf915abfd98",
+                              "title": "Java 特性: 偏向锁 | 说明: 无竞争时零开销 | Go 替代方案: 无，用 atomic 或避免共享",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "8aea1a40-18ee-4221-b701-abd1dbc2fe8d",
+                              "title": "Java 特性: 锁消除 | 说明: JIT 检测到无竞争时移除锁 | Go 替代方案: 无 JIT，编译器逃逸分析有限",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "f0e7947e-3d13-4c22-a9cc-ad136fb42429",
+                              "title": "Java 特性: 锁升级 | 说明: 根据竞争自动升级 | Go 替代方案: 手动选择 atomic/Mutex",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1460fdee-50a6-4cd9-a105-dc803de01da4",
+                              "title": "Java 特性: 可重入 | 说明: 同线程可多次获取 | Go 替代方案: 不支持，需重构代码",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "04f5a80c-2050-4d93-8001-bd2b91b42286",
+                              "title": "Java 特性: Condition | 说明: 条件变量 | Go 替代方案: `sync.Cond`（功能类似）",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "271f0aa9-47db-4d79-a50e-b9d3c7ad1440",
+                              "title": "Java 特性: StampedLock | 说明: 乐观读锁 | Go 替代方案: 无直接对应，用 atomic.Value",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "06684421-7511-4c92-af9a-e8cf4aa09960",
+                        "title": "Go 的设计哲学",
+                        "titleUnedited": false,
+                        "children": {
+                          "attached": [
+                            {
+                              "id": "b7057bc1-d8e8-4c7d-9ac5-004ad0c131e6",
+                              "title": "📌 **显式优于隐式**：",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "1cd26b5b-bc3b-49c5-b457-dba17eda7ed8",
+                              "title": "📌 - 不搞复杂的锁升级，让程序员明确选择工具",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "2a7f88ca-32bf-4b4d-a7f4-e6f10b800c2a",
+                              "title": "📌 - 不支持可重入，避免隐藏的复杂性和递归锁的性能问题",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "9113b3b9-c463-4388-a6bf-a1e711da9f56",
+                              "title": "📌 - 推荐用 Channel 替代锁，从设计上避免锁问题",
+                              "titleUnedited": false
+                            },
+                            {
+                              "id": "07109aec-e80c-43e0-abee-25c661ee382b",
+                              "title": "📌 **\"Don't communicate by sharing memory; share memory by communicating.\"**",
+                              "titleUnedited": false
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "title": "Go 多线程知识点",
+    "topicOverlapping": "overlap",
+    "extensions": [
+      {
+        "provider": "org.xmind.ui.skeleton.structure.style",
+        "content": {
+          "centralTopic": "org.xmind.ui.map.clockwise"
+        }
+      }
+    ],
+    "theme": {
+      "map": {
+        "id": "3d881453-f209-4d9c-a917-35ef1ba78034",
+        "properties": {
+          "svg:fill": "#ffffff",
+          "multi-line-colors": "#FF6B6B #FF9F69 #97D3B6 #88E2D7 #6FD0F9 #E18BEE",
+          "color-list": "#FF6B6B #FF9F69 #97D3B6 #88E2D7 #6FD0F9 #E18BEE",
+          "line-tapered": "none"
+        }
+      },
+      "centralTopic": {
+        "id": "150211bc-de37-427b-800c-c4d399c93669",
+        "properties": {
+          "fo:font-family": "NeverMind",
+          "fo:font-size": "30pt",
+          "fo:font-weight": "800",
+          "svg:fill": "#000000",
+          "shape-class": "org.xmind.topicShape.roundedRect",
+          "line-class": "org.xmind.branchConnection.curve"
+        }
+      },
+      "mainTopic": {
+        "id": "99bac49f-2235-4d2c-b6c5-534332bb8610",
+        "properties": {
+          "fo:font-family": "NeverMind",
+          "fo:font-size": "18pt",
+          "fo:font-weight": "500",
+          "shape-class": "org.xmind.topicShape.roundedRect",
+          "line-class": "org.xmind.branchConnection.roundedElbow"
+        }
+      },
+      "subTopic": {
+        "id": "ee28bbb3-1fdb-4ed7-928a-e7a9de245018",
+        "properties": {
+          "fo:font-family": "NeverMind",
+          "fo:font-size": "14pt",
+          "fo:font-weight": "400",
+          "shape-class": "org.xmind.topicShape.roundedRect",
+          "line-class": "org.xmind.branchConnection.roundedElbow"
+        }
+      }
+    }
+  }
+]
