@@ -3,8 +3,8 @@
 > **作者**: frank.hutiefang
 > **知乎**: @大大大大大芳
 > **微信**: hutiefang
-> **版本**: v1.1
-> **更新时间**: 2026-02-25
+> **版本**: v1.3
+> **更新时间**: 2026-02-26
 
 ---
 
@@ -256,6 +256,105 @@ obj := new(MyStruct) // sizeof(MyStruct) = 48
 | 内存对齐 | 8B 对齐 | 8B 对齐（指针大小） |
 | 分代 | Young / Old / MetaSpace | **无分代** |
 
+### 2.7 make vs new
+
+| 维度 | `new(T)` | `make(T, args)` |
+|------|----------|-----------------|
+| 适用类型 | 任意类型 | 仅 slice、map、channel |
+| 返回值 | `*T`（指针） | `T`（值） |
+| 初始化 | 零值填充，不做内部结构初始化 | 初始化内部数据结构（底层数组、哈希桶、环形缓冲区） |
+| 是否可用 | 返回的指针指向零值，基本类型可直接用 | 返回可直接使用的 slice/map/channel |
+
+```go
+// new：分配零值内存，返回指针
+p := new(int)      // *int，值为 0
+s := new([]int)    // *[]int，值为 nil（不能直接 append！）
+
+// make：分配 + 初始化内部结构，返回值
+s := make([]int, 0, 10)  // 底层数组已分配，可以 append
+m := make(map[string]int) // 哈希桶已初始化，可以赋值
+ch := make(chan int, 5)    // 环形缓冲区已创建，可以收发
+```
+
+**常见陷阱**：`new(map[string]int)` 返回的是指向 nil map 的指针，**赋值会 panic**。map/slice/channel 必须用 `make`。
+
+### 2.8 内存对齐（Memory Alignment）
+
+CPU 读取内存按**字长（word size）**对齐访问（64位系统为 8B），未对齐的访问可能需要两次读取。Go 编译器会自动在 struct 字段间插入**填充字节（padding）**以满足对齐要求。
+
+#### 对齐规则
+
+| 类型 | 大小 | 对齐边界 |
+|------|------|----------|
+| `bool`、`int8`、`byte` | 1B | 1B |
+| `int16` | 2B | 2B |
+| `int32`、`float32` | 4B | 4B |
+| `int64`、`float64`、指针 | 8B | 8B |
+| `struct` | 各字段之和+padding | 最大字段的对齐边界 |
+
+#### 字段顺序影响内存占用
+
+```go
+// ❌ 差：字段顺序导致大量 padding
+type Bad struct {
+    a bool    // 1B + 7B padding
+    b int64   // 8B
+    c bool    // 1B + 7B padding
+}
+// sizeof = 24B
+
+// ✅ 好：按对齐边界从大到小排列
+type Good struct {
+    b int64   // 8B
+    a bool    // 1B
+    c bool    // 1B + 6B padding（尾部对齐）
+}
+// sizeof = 16B  节省 33%
+```
+
+**查看工具**：
+```bash
+# 查看 struct 内存布局（含 padding）
+go vet -fieldalignment ./...
+
+# 或使用 golang.org/x/tools/go/analysis/passes/fieldalignment
+```
+
+**经验法则**：struct 字段按对齐边界**从大到小**排列，可最小化 padding 浪费。
+
+### 2.9 空结构体 `struct{}`
+
+`struct{}` 是 Go 中唯一**零内存**的类型：
+
+```go
+unsafe.Sizeof(struct{}{})  // 0
+```
+
+**用途**：
+
+| 场景 | 写法 | 说明 |
+|------|------|------|
+| 信号通知 | `ch := make(chan struct{})` | 不传数据只传信号，零内存 |
+| Set 集合 | `map[string]struct{}{}` | value 不占内存，比 `map[string]bool` 省 |
+| 方法挂载 | `type handler struct{}` | 不需要状态的类型 |
+
+```go
+// 用 struct{} 实现 Set
+seen := make(map[string]struct{})
+seen["hello"] = struct{}{}
+if _, ok := seen["hello"]; ok {
+    // 存在
+}
+
+// 用 struct{} 做信号 channel
+done := make(chan struct{})
+go func() {
+    work()
+    close(done)  // 通知完成
+}()
+<-done
+```
+
 ---
 
 ## 第三部分：栈内存管理
@@ -468,6 +567,43 @@ Step 4: 剩余白色对象 = 垃圾 → 回收
 1. 黑色对象引用了白色对象
 2. 灰色对象到该白色对象的所有路径被断开
 
+#### 强三色不变式与弱三色不变式
+
+为了防止对象丢失，GC 必须维护以下两个不变式之一：
+
+| 不变式 | 定义 | 通俗理解 |
+|--------|------|----------|
+| **强三色不变式** | 黑色对象**不得**直接引用白色对象 | 已检查完的货架上不许出现未登记的包裹 |
+| **弱三色不变式** | 黑色对象可以引用白色对象，**但该白色对象必须存在一条从灰色对象出发可达的路径** | 未登记的包裹可以放在已检查的货架上，但必须保证有另一条在检查中的路线能找到它 |
+
+**写屏障与不变式的对应关系**：
+
+| 写屏障 | 维护的不变式 | 机制 |
+|--------|------------|------|
+| 插入屏障（Dijkstra） | **强三色** | 新指向的对象标灰 → 黑色永远不会指向白色 |
+| 删除屏障（Yuasa） | **弱三色** | 被删引用的旧对象标灰 → 保证灰色到白色的路径不断 |
+| 混合写屏障（Go 1.8+） | **弱三色** | 新旧值都标灰 → 综合两者，消除栈重扫描 |
+
+```
+强三色不变式：
+  黑 ──✗──→ 白     禁止！黑色不能直接引用白色
+
+弱三色不变式：
+  黑 ──────→ 白     允许，但前提是：
+  灰 ──...──→ 白     必须存在灰色到该白色的可达路径
+```
+
+> **面试关键点**：Go 1.5 插入屏障满足强三色不变式，但栈上不开屏障，所以需要 STW 重扫描栈。Go 1.8 混合写屏障满足弱三色不变式，栈上对象在 GC 开始时全部标黑且新建对象也为黑色，所以无需重扫描栈。
+
+#### Go GC 各版本全场景对比
+
+| 版本 | 屏障 | 栈处理 | STW 次数 | 核心问题 |
+|------|------|--------|----------|----------|
+| **Go 1.3** | 无 | 全量 STW 标记 | 1 次（全程） | STW 数百 ms，不可接受 |
+| **Go 1.5** | 插入屏障（仅堆） | 并发标记后 STW 重扫描栈 | 2 次 | STW2 需重扫全部栈 |
+| **Go 1.7** | 插入屏障 + 并行清扫 | 同上 | 2 次 | 清扫并发化 |
+| **Go 1.8+** | **混合写屏障** | 开始时栈标黑，新对象黑色 | 2 次（极短） | STW 仅做初始化/终止，< 500μs |
+
 ### 4.4 写屏障（Write Barrier）
 
 写屏障是解决并发标记丢失问题的核心机制。
@@ -553,7 +689,14 @@ GC 期间 goroutine（被 assist）： 分配 → 标记一些对象 → 运行 
 
 **影响**：高分配率的 goroutine 在 GC 期间会变慢。这是 GC 延迟的主要来源之一。
 
-### 4.8 与 JVM GC 对比
+### 4.8 GC Pacer（节奏控制器）
+
+GC Pacer 是 Runtime 内部的调度机制，自动决定**何时触发 GC** 和 **分配多少 CPU 给标记**。开发者不需要直接操作它，但理解其原理有助于调优：
+
+- 触发太早 → 浪费 CPU；触发太晚 → 堆增长过大
+- Go 1.19+ 的 Pacer 同时考虑 GOGC 和 GOMEMLIMIT，接近内存上限时**自动加速 GC** 而非直接 OOM
+
+### 4.9 与 JVM GC 对比
 
 | 维度 | JVM（G1/ZGC） | Go |
 |------|--------------|-----|
@@ -770,7 +913,64 @@ func noLeak(ctx context.Context) {
 }
 ```
 
-### 6.3 pprof 内存分析
+### 6.3 其他常见内存泄漏场景
+
+#### time.Ticker 未 Stop
+
+```go
+// ❌ 泄漏：Ticker 不 Stop，底层 channel 和 goroutine 永远不释放
+func leak() {
+    ticker := time.NewTicker(time.Second)
+    // 忘记 defer ticker.Stop()
+    for range ticker.C {
+        doWork()
+    }
+}
+
+// ✅ 修复
+func noLeak() {
+    ticker := time.NewTicker(time.Second)
+    defer ticker.Stop()  // 必须 Stop
+    for range ticker.C {
+        doWork()
+    }
+}
+```
+
+#### slice 底层数组引用
+
+```go
+// ❌ 泄漏：子 slice 引用原始大数组，导致大数组无法被 GC
+func leak() []byte {
+    big := make([]byte, 1<<20)  // 1MB
+    loadData(big)
+    return big[:10]  // 只用 10 字节，但底层 1MB 数组被持有
+}
+
+// ✅ 修复：拷贝需要的部分
+func noLeak() []byte {
+    big := make([]byte, 1<<20)
+    loadData(big)
+    result := make([]byte, 10)
+    copy(result, big[:10])
+    return result  // big 可被 GC
+}
+```
+
+#### 全局 map 只增不删
+
+```go
+// ❌ 泄漏：map 不断添加 key，从不删除，内存只增不减
+var cache = make(map[string][]byte)
+
+func handle(key string, data []byte) {
+    cache[key] = data  // 永远增长
+}
+
+// ✅ 修复：设置容量上限 + LRU 淘汰，或使用带 TTL 的缓存库
+```
+
+### 6.4 pprof 内存分析
 
 #### 接入
 
@@ -812,7 +1012,7 @@ go tool pprof http://localhost:6060/debug/pprof/goroutine
 | `alloc_space` | 累计分配的堆内存 | 排查高分配率函数 |
 | `alloc_objects` | 累计分配的堆对象数 | 排查频繁分配 |
 
-### 6.4 runtime 内存统计
+### 6.5 runtime 内存统计
 
 ```go
 var m runtime.MemStats
@@ -827,7 +1027,7 @@ fmt.Printf("GCCPUFrac:    %.4f\n", m.GCCPUFraction)            // GC 占 CPU 比
 fmt.Printf("NumGoroutine: %d\n", runtime.NumGoroutine())        // goroutine 数
 ```
 
-### 6.5 内存归还 OS
+### 6.6 内存归还 OS
 
 Go Runtime 不会立即将释放的内存归还操作系统：
 
@@ -1007,12 +1207,3 @@ GOEXPERIMENT=greenteagc ./app
 - **极短 STW**：通过混合写屏障将 STW 控制在亚毫秒级
 - **极简调优**：两个参数解决 90% 场景，对比 JVM 数十个 GC 参数
 
----
-
-## 参考资料
-
-- [Go 内存分配器设计 - golang.design](https://golang.design/go-questions/)
-- [Go GC 指南 - go.dev](https://tip.golang.org/doc/gc-guide)
-- [runtime 包文档 - pkg.go.dev](https://pkg.go.dev/runtime)
-- [Getting to Go: The Journey of Go's Garbage Collector - go.dev blog](https://go.dev/blog/ismmkeynote)
-- [Go 内存管理 - luozhiyun.com](https://www.luozhiyun.com)
